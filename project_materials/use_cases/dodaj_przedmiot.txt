@@ -1,0 +1,30 @@
+
+UC2-02: Dodaj nowy przedmiot
+Autor: ML
+Priorytet: średni 
+Poziom: systemowy
+Aktorzy: starosta
+Cel: Możliwość dodania nowego przedmiotu do listy przedmiotów
+Warunek początkowy: K
+Warunek końcowy: Nowy przedmiot widoczny na liście i dostępny do wyboru
+Zdarzenie inicjujące: Starosta wciska przycisk "Dodaj przedmiot"
+
+Główny scenariusz powodzenia:
+
+1.  Starosta wprowadza nazwę nowego przedmiotu 
+2.  Starosta wpisuje imie i nazwisko prowadzącego
+3.  Starosta wciska przycisk "dodaj"
+4.  Przedmiot pojawia się w sekcji "Zarządzanie przedmiotami"
+
+Scenariusze alternatywne:
+
+2.1     Prowadzącego o podanym imieniu i nazwisku nie istnieje w bazie  - pojawia się okienko z zapytaniem, czy dodać nowego prowadzącego
+2.1.1   Starosta zatwierdza dodanie nowego prowadzącego
+2.1.2   Nowy prowadzacy zostaje dopisany do bazy
+
+2.2 Przedmiot o podanej nazwie już istnieje
+2.2.1 Pojawia się okno informujące o braku możliwości dodania przedmiotu
+
+Wymagania specjalne:
+
+- Lista przedmiotów powinna być aktualizowana po odświeżeniu strony

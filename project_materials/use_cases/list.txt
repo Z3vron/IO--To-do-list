@@ -1,0 +1,7 @@
+
+staromsta
+- dodanie przedmiotu
+- usuniecie przedmiotu
+- zawieszenie przedmiotu
+- rozpatrzenie ticketa (odrzucenie lub akceptacja) 
+- zapisanie/wypisanie studenta z przedmiotu - rozbić na dwa ??

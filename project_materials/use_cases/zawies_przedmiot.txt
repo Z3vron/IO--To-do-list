@@ -1,0 +1,24 @@
+UC2-02: Zawies przedmiot
+Autor: ML
+Priorytet: średni 
+Poziom: systemowy
+Aktorzy: starosta
+Cel: Możliwość zawieszenia przedmiotu 
+Warunek początkowy: Przedmiot widoczy w sekcji "Zarządzanie przedmiotami" oraz nie jest zawieszony
+Warunki końcowe: 
+    - Zawieszony przedmiot widoczny na liście przedmiotów
+    - Przycisk "zawieś przedmiot" zamienia się na "Uruchom przedmiot"
+    - Studenci wcześniej zapisani na dany przedmiot zostają z niego wypisani, przedmiot
+    znika z listy przedmitów w panelu studenta.
+
+
+Główny scenariusz powodzenia:
+
+1.  Starosta wciska przycisk "Zawieś przedmiot" 
+2.  Zapisani na przedmiot studenci zostają wypisani
+3.  Przycisk "Zawieś przedmiot" zamienia się na "Uruchom przedmiot"
+
+
+Wymagania specjalne:
+
+- Lista przedmiotów powinna być aktualizowana po odświeżeniu strony

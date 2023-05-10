@@ -1,0 +1,27 @@
+UC2-02: Przetworz ticket
+Autor: ML
+Priorytet: średni 
+Poziom: systemowy
+Aktorzy: starosta
+Cel: Możliwość odzrzucenia lub zaakceptowania ticketa
+Warunek początkowy: Ticket jest widoczny na liście
+Warunki końcowe: 
+    - Po zaakceptowaniu - student zostaje zapisany/wypisany z odpowiedniego przedmiotu
+                        - ticket zostaje usuniety
+    - Po odrzuceniu     - ticket zostaje usunięty
+                        - lista przedmiotów studenta pozostaje bez zmian
+
+
+Główny scenariusz powodzenia:
+
+1.1     Starosta wciska przycisk "Akceptuj" 
+1.1.1   Ticket dotyczy zapisania na przedtmiot
+1.1.1.1 Student zostaje  zapisany na przedmiot
+1.1.2   Ticket dotyczy wypisanie z przedtmiotu
+1.1.2.1 Student zostaje  wypisany z przedmiotu
+1.2     Starosta wciska przycisk "Odrzuć" 
+2.      Ticket zostaje usunięty
+
+Wymagania specjalne:
+
+- Lista ticketów odświeżana w czasie rzeczywistym

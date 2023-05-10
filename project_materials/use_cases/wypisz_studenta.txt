@@ -1,0 +1,26 @@
+UC2-02: Wypisz studenta z przedmiotu
+Autor: ML
+Priorytet: średni 
+Poziom: systemowy
+Aktorzy: starosta
+Cel: Możliwość wypisania studenta z przedmiotu
+Warunki początkowe: 
+    - Przedmiot jest dostępny w bazie
+    - Student jest na niego zapisany
+Warunki końcowe: 
+    - Student wypisany z przedmiotu
+    - Przedmtiot znika z listy przedmitów w panelu studenta
+
+
+Główny scenariusz powodzenia:
+
+1.  Starosta klika przycisk "Rozwiń listę" przy odpowiednim studencie w sekcji "Wypisz z przedmiotu"
+2.  System generuje liste przedmiotów, na które student jest zapisany
+3.  Starosta zaznacza jeden lub kilka przedmiotów
+4.  Starosta wciska przycisk "Wypisz"
+5.  System wypisuje studenta z przedmiotów
+
+
+Wymagania specjalne:
+
+- Przy kliknięciu "Rozwiń" dostępne są wszystkie przedmioty, z których student może zostać wypisany

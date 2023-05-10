@@ -1,0 +1,25 @@
+UC2-02: Usuń przedmiot
+Autor: ML
+Priorytet: średni 
+Poziom: systemowy
+Aktorzy: starosta
+Cel: Możliwość usunięcia przedmiotu z listy przedmiotów
+Warunek początkowy: Przedmiot widoczny w sekcji "Zarządzanie przedmiotami"
+Warunek końcowy: Przedmiot usunięty z listy przedmiotów, nie jest widoczny również w panelu 
+studenta
+
+Główny scenariusz powodzenia:
+
+1.  Starosta wciska przycisk "Usuń przedmiot" 
+2.  Zapisani na przedmiot studenci zostają wypisani
+3.  Przedmiot znika z listy przedmiotów
+
+Scenariusze alternatywne:
+
+2.1     Przedmiot już został usunięty, natomiast lista nie została odświeżona
+2.1.1   Pojawia się komunikat o błędzie z prośbą odświeżenia strony
+
+
+Wymagania specjalne:
+
+- Lista przedmiotów powinna być aktualizowana po odświeżeniu strony

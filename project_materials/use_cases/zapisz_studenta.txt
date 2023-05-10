@@ -1,0 +1,30 @@
+UC2-02: Zapisz studenta na przedmiot
+Autor: ML
+Priorytet: średni 
+Poziom: systemowy
+Aktorzy: starosta
+Cel: Możliwość zapisania studenta na przedmiot
+Warunki początkowe: 
+    - Przedmiot jest dostępny w bazie
+    - Student nie jest na niego zapisany
+Warunki końcowe: 
+    - Student zapisany na przedmiot
+    - Przedmtiot pojawia się na liście przedmitów w panelu studenta
+
+
+Główny scenariusz powodzenia:
+
+1.  Starosta klika przycisk "Rozwiń listę" przy odpowiednim studencie w sekcji "Przydziel przedmiot"
+2.  System generuje liste przedmiotów, na które student może zostać zapisany
+3.  Starosta zaznacza jeden lub kilka przedmiotów
+4.  Starosta wciska przycisk "Zapisz"
+5.  System przypisuje studenta do przedmiotów
+
+Scenariusze alternatywne:
+4.1 Suma godzin wybranych przedmiotów razem z już przypisanymi studentowi przekracza
+maksymalnie dopuszczalną ilość godzin
+5.  Zostaje wyświetlone okno o tym informujące oraz proces zostaje przerwany
+
+Wymagania specjalne:
+
+- Przy kliknięciu "Rozwiń" dostępne są wszystkie przedmioty, na które student może zostać zapisany

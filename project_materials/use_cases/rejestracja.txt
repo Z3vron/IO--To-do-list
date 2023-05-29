@@ -1,0 +1,23 @@
+UC1-01: Rejestracja użytkownika
+Autor: JT
+Priorytet: wysoki 
+Poziom: systemowy
+Aktorzy: użytkownik (starosta lub student)
+Cel: Możliwość zarejestrowania się w systemie
+Warunki początkowe: 
+    - Użytkownik nie posiada jeszcze konta
+Warunki końcowe: 
+    - Użytkownik posiada konto, na które może się zalogować
+
+Główny scenariusz powodzenia:
+
+1. Użytkownik wprowadza swoje dane (imie, nazwisko, numer albumu, email posługujący za login,
+	hasło do konta)
+2. Użytkownik zaznacza aktualny rok studiów
+3. Po wciśnięciu przycisku "Stwórz konto" użytkownik przekierowywany jest do panelu logowania
+
+Scenariusze alternatywne:
+1.1 Użytkownik posiada konto, po wciśnięciu przycisku "Zaloguj się" przekierowany jest 
+	do formularza logowania 
+1.2.1 Użytkownik wprowadza email do którego przypisane jest już konto
+1.2.2 Wyświetlony jest o tym komunikat i formularz zostaje wygenerowany na nowo

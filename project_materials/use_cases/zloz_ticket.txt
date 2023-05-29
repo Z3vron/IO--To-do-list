@@ -1,0 +1,24 @@
+UC3-01: Złożenie ticketu
+Autor: JT
+Priorytet: średni 
+Poziom: systemowy
+Aktorzy: student
+Cel: Możliwość wystawienia ticketu o przypisanie lub wypisanie z przedmiotu
+Warunki początkowe: 
+    Wypisanie:
+	-Student jest przypisany do wybranego przedmiotu 
+    Przypisanie:
+	-Student nie jest przypisany do wybranego przedmiotu
+Warunki końcowe: 
+    - Ticket trafia do rozpatrzenia przez starostę
+
+Główny scenariusz powodzenia:
+1. Uzytkownik klika przycisk "Stwórz ticket" 
+2. Użytkownik wybiera rodzaj ticketu (przypisanie lub wypisanie)
+3. Użytkownik wprowadza nazwę przedmiotu
+4. Po wciśnięciu przycisku "Złóż ticket" użytkownik wraca do bazowego panelu,
+   a ticket wysyłany jest do panelu starosty
+
+Wymagania specjalne: 
+
+-Podczas wpisywania nazwy przedmiotu, powinny się wyświetlać "proponowane" dostępne przedmioty

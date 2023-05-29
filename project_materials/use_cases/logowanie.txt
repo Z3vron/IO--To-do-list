@@ -1,0 +1,21 @@
+UC1-02: Logowanie użytkownika
+Autor: JT
+Priorytet: wysoki 
+Poziom: systemowy
+Aktorzy: użytkownik (starosta lub student)
+Cel: Możliwość zalogowania się do systemu
+Warunki początkowe: 
+    - Użytkownik nie jest jeszcze zalogowany
+Warunki końcowe: 
+    - Użytkownik ma dostęp do odpowiedniego panelu
+
+Główny scenariusz powodzenia:
+
+1. Użytkownik wprowadza swój e-mail (spełniający rolę login'u)
+2. Użytkownik wprowadza poprawne hasło przypisane do podanego login'u
+3. Po wciśnięciu przycisku zaloguj użytkownik przekierowywany jest do odpowiedniego panelu
+
+Scenariusze alternatywne:
+1.1 Użytkownik nie posiada jeszcze konta, po wciśnięciu przycisku "Zarejestruj się" przekierowany jest 
+	do formularza rejestracji 
+2.1 Użytkownik wprowadza błędne dane logowania -> powrót do punktu 1

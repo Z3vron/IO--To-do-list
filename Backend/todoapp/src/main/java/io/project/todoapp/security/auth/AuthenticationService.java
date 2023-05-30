@@ -47,6 +47,7 @@ public class AuthenticationService {
         String jwtToken = jwtService.generateToken(user);
         return AuthenticationResponse.builder()
                 .token(jwtToken)
+                .user(user)
                 .build();
     }
 
@@ -94,10 +95,7 @@ public class AuthenticationService {
         actualSemester.setSubjects(mappedSubjects);
         return AuthenticationResponse.builder()
                 .token(jwtToken)
-                .firstName(user.getFirstName())
-                .lastName(user.getLastName())
-                .email(user.getEmail())
-                .semester(actualSemester)
+                .user(user)
                 .build();
     }
 }

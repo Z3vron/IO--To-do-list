@@ -16,8 +16,5 @@ import java.util.List;
 public class AuthenticationResponse {
 
     private String token;
-    private String firstName;
-    private String lastName;
-    private String email;
-    private Semester semester;
+    private User user;
 }

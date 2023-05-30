@@ -47,7 +47,21 @@ public class AuthenticationService {
         String jwtToken = jwtService.generateToken(user);
         return AuthenticationResponse.builder()
                 .token(jwtToken)
+                .user(user)
                 .build();
+    }
+
+    public void registerClassPresident(RegisterClassPresidentRequest request) {
+        User user = User.builder()
+                .firstName(request.getFirstName())
+                .lastName(request.getLastName())
+                .email(request.getEmail())
+                .password(passwordEncoder.encode(request.getPassword()))
+                .role(Role.STUDENT)
+                .actualSemester(request.getSemester())
+                .build();
+
+        userRepository.save(user);
     }
 
     public void registerClassPresident(RegisterClassPresidentRequest request) {
@@ -94,10 +108,7 @@ public class AuthenticationService {
         actualSemester.setSubjects(mappedSubjects);
         return AuthenticationResponse.builder()
                 .token(jwtToken)
-                .firstName(user.getFirstName())
-                .lastName(user.getLastName())
-                .email(user.getEmail())
-                .semester(actualSemester)
+                .user(user)
                 .build();
     }
 }

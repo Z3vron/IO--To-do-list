@@ -1,5 +1,6 @@
 package io.project.todoapp.security.auth;
 
+import io.project.todoapp.model.Semester;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -9,11 +10,11 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class RegisterRequest {
+public class RegisterClassPresidentRequest {
 
     private String firstName;
     private String lastName;
     private String email;
     private String password;
-    private Long semesterId;
+    private Semester semester;
 }

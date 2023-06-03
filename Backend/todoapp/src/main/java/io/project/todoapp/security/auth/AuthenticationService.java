@@ -64,18 +64,6 @@ public class AuthenticationService {
         userRepository.save(user);
     }
 
-    public void registerClassPresident(RegisterClassPresidentRequest request) {
-        User user = User.builder()
-                .firstName(request.getFirstName())
-                .lastName(request.getLastName())
-                .email(request.getEmail())
-                .password(passwordEncoder.encode(request.getPassword()))
-                .role(Role.STUDENT)
-                .actualSemester(request.getSemester())
-                .build();
-
-        userRepository.save(user);
-    }
 
     public AuthenticationResponse authenticate(AuthenticationRequest request) {
         authenticationManager.authenticate(

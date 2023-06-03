@@ -1,0 +1,22 @@
+UC3-02: Zaliczenie etapu
+Autor: JT
+Priorytet: średni 
+Poziom: systemowy
+Aktorzy: student
+Cel: Możliwość zaliczenia etapu przypisanego wybranego przedmiotu
+Warunki początkowe: 
+    -Student jest zalogowany i ma dostęp do panelu 
+Warunki końcowe: 
+    -Etap/etapy wybrane zostają zapisane w bazie jako zaliczone 
+
+Główny scenariusz powodzenia:
+1. Uzytkownik klika przycisk "Rozwiń listę" przy odpowiednim przedmiocie z listy
+2. Użytkownik zaznacza etap/etapy, które mają widnieć jako zaliczone
+3. Po wciśnięciu przycisku "Zapisz" pod listą etapów użytkownik wraca do bazowego panelu,
+   a etap/etapy zostają zapisane jako zaliczone 
+
+Wymagania specjalne: 
+
+-Etapy zapisane wcześniej jako zaliczone powinny wyświetlać się na liście
+   z polem wyboru już zaznaczonym
+-Pasek statusu ukończenia po zapisaniu powinien zauktualizować się do nowej wartości

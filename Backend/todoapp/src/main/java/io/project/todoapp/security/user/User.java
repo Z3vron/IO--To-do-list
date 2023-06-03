@@ -1,5 +1,6 @@
 package io.project.todoapp.security.user;
 
+import io.project.todoapp.model.Semester;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -17,7 +18,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "_user")
+@Table(name = "_user", schema = "test")
 public class User implements UserDetails {
 
     @Id
@@ -25,8 +26,12 @@ public class User implements UserDetails {
     private Long id;
     private String firstName;
     private String lastName;
+    @Column(unique=true)
     private String email;
     private String password;
+    @OneToOne(cascade = CascadeType.MERGE)
+    @JoinTable(name="user_semester", schema = "test")
+    private Semester actualSemester;
     @Enumerated(value = EnumType.STRING)
     private Role role;
     @Override
@@ -62,5 +67,9 @@ public class User implements UserDetails {
     @Override
     public boolean isEnabled() {
         return true;
+    }
+
+    public boolean isStudent() {
+        return this.role.equals(Role.STUDENT) || this.role.equals(Role.CLASS_PRESIDENT);
     }
 }

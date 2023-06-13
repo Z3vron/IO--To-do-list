@@ -14,35 +14,35 @@
     <div class="container-sm">
         <h1 class="display-2">Zarejestruj się</h1>
 <br><br>
-        <form style="width: 550px">
+        <div style="width: 550px">
             <div class="row mb-3">
               <label for="inputEmail3" class="col-sm-3 col-form-label">Imię</label>
               <div class="col-sm-9">
-                <input type="text" class="form-control" id="inputEmail3">
+                <input type="text" class="form-control" id="first_name">
               </div>
             </div>
             <div class="row mb-3">
                 <label for="inputEmail3" class="col-sm-3 col-form-label">Nazwisko</label>
                 <div class="col-sm-9">
-                  <input type="text" class="form-control" id="inputEmail3">
+                  <input type="text" class="form-control" id="last_name">
                 </div>
             </div>
             <div class="row mb-3">
                 <label for="inputEmail3" class="col-sm-3 col-form-label">Number albumu</label>
                 <div class="col-sm-9">
-                  <input type="text" class="form-control" id="inputEmail3">
+                  <input type="text" class="form-control" id="student_id">
                 </div>
             </div>
             <div class="row mb-3">
                 <label for="inputEmail3" class="col-sm-3 col-form-label">Email</label>
                 <div class="col-sm-9">
-                  <input type="email" class="form-control" id="inputEmail3">
+                  <input type="email" class="form-control" id="email">
                 </div>
             </div>
             <div class="row mb-3">
               <label for="inputPassword3" class="col-sm-3 col-form-label">Hasło</label>
               <div class="col-sm-9">
-                <input type="password" class="form-control" id="inputPassword3">
+                <input type="password" class="form-control" id="password">
               </div>
             </div>
             <fieldset class="row mb-3">
@@ -81,12 +81,13 @@
               </div>
             </fieldset>
             <div class="d-grid col-4 mx-auto">
-                <button type="submit" class="btn btn-primary ">Stwórz konto</button>
+                <button class="btn btn-primary" id="register_button">Stwórz konto</button>
                 <br>
-                <p>Nie masz konta?<a href="login.html" class="link-primary">Zarejestruj się</a></p> 
+                <p>Jesteś już zarejestrowany?<a href="login.html" class="link-primary">Zaloguj się</a></p> 
             </div>
-          </form>
+          </div>
     </div>
 
 
+    <script src="js/registration.js"></script>
 </body>

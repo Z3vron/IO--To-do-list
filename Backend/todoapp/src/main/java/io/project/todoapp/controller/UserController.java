@@ -16,6 +16,7 @@ public class UserController {
 
     private final UserService userService;
 
+    @CrossOrigin(origins = "*")
     @GetMapping("/students/{id}")
     public User getStudent(@PathVariable Long id) {
         return userService.getStudentById(id);

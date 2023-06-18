@@ -1,6 +1,5 @@
 package io.project.todoapp.service;
 
-import io.project.todoapp.model.Subject;
 import io.project.todoapp.model.Task;
 import io.project.todoapp.repository.TaskRepository;
 import io.project.todoapp.security.user.User;
@@ -8,11 +7,7 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
-
-import static io.project.todoapp.model.Subject.*;
 
 @Service
 @AllArgsConstructor
@@ -40,7 +35,13 @@ public class TaskService {
 
     }
 
-    public List<Task> findAllByUserId(Long id) {
-        return taskRepository.findAllById(Collections.singleton(id));
+    public void makeTaskDone(Long taskId) {
+        Task task = taskRepository.getReferenceById(taskId);
+        task.setDone(true);
+        taskRepository.save(task);
+    }
+
+    public List<Task> findAll() {
+        return taskRepository.findAll();
     }
 }

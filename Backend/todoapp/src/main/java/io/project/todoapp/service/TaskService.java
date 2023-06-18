@@ -32,16 +32,29 @@ public class TaskService {
                     .build();
             taskRepository.save(newTask);
         }
-
     }
 
     public void makeTaskDone(Long taskId) {
-        Task task = taskRepository.getReferenceById(taskId);
+        Task task = getTask(taskId);
         task.setDone(true);
-        taskRepository.save(task);
+        saveTask(task);
+    }
+
+    public void makeTaskUndone(Long taskId) {
+        Task task = getTask(taskId);
+        task.setDone(false);
+        saveTask(task);
     }
 
     public List<Task> findAll() {
         return taskRepository.findAll();
+    }
+
+    private Task getTask(Long taskId) {
+        return taskRepository.getReferenceById(taskId);
+    }
+
+    private void saveTask(Task task) {
+        taskRepository.save(task);
     }
 }

@@ -6,3 +6,7 @@
     padding-left: 40px;
     padding-right: 40px;
 } */
+
+.hide {
+    display: none;
+}

@@ -62,6 +62,7 @@ public class AuthenticationService {
         userRepository.save(user);
     }
 
+
     public AuthenticationResponse authenticate(AuthenticationRequest request) {
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(

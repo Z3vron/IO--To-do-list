@@ -6,9 +6,5 @@ spring:
     url: jdbc:postgresql://dumbo.db.elephantsql.com/ghhbpmgd
     username: ghhbpmgd
     password: vWt0G2D-PBw4A5rhtcHIe9b0NP7Agmyv
-#    tomcat:
-#      max-wait: 1000
-#      max-active: 3
-#      test-on-borrow: true
     driverClassName: org.postgresql.Driver
     database-platform: org.hibernate.dialect.PostgreSQLDialect

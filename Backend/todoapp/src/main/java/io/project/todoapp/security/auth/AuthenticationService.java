@@ -15,10 +15,8 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
-
-import static io.project.todoapp.model.Subject.*;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -64,19 +62,6 @@ public class AuthenticationService {
         userRepository.save(user);
     }
 
-    public void registerClassPresident(RegisterClassPresidentRequest request) {
-        User user = User.builder()
-                .firstName(request.getFirstName())
-                .lastName(request.getLastName())
-                .email(request.getEmail())
-                .password(passwordEncoder.encode(request.getPassword()))
-                .role(Role.STUDENT)
-                .actualSemester(request.getSemester())
-                .build();
-
-        userRepository.save(user);
-    }
-
     public AuthenticationResponse authenticate(AuthenticationRequest request) {
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
@@ -87,25 +72,16 @@ public class AuthenticationService {
         User user = userRepository.findByEmail(request.getEmail())
                 .orElseThrow();
 
-        List<Task> allTasksByUserId = taskService.findAllByUserId(user.getId());
+        List<Task> allTasksByUserId = taskService.findAll().stream().filter(e -> e.getUserId().equals(user.getId())).collect(Collectors.toList());
         List<Subject> subjects = user.getActualSemester().getSubjects();
-        List<Subject> mappedSubjects = new ArrayList<>();
 
-        for(Subject subject : subjects) {
-            List<Task> mappedTasks = new ArrayList<>();
-            for (Task task : allTasksByUserId) {
-                if (subject.getId().equals(task.getSubjectId())) {
-                    mappedTasks.add(task);
-                }
-
-            }
-            subject.setTasks(mappedTasks);
-            mappedSubjects.add(subject);
+            for (Subject subject : subjects) {
+            List<Task> taskBySubject = allTasksByUserId.stream().filter(e -> e.getSubjectId().equals(subject.getId())).collect(Collectors.toList());
+            subject.setTasks(taskBySubject);
         }
 
-        String jwtToken = jwtService.generateToken(user);
-        Semester actualSemester = user.getActualSemester();
-        actualSemester.setSubjects(mappedSubjects);
+//        String jwtToken = jwtService.generateToken(user);
+        String jwtToken = "";
         return AuthenticationResponse.builder()
                 .token(jwtToken)
                 .user(user)

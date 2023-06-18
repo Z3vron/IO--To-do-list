@@ -1,6 +1,5 @@
 package io.project.todoapp.controller;
 
-import io.project.todoapp.model.Subject;
 import io.project.todoapp.model.Task;
 import io.project.todoapp.service.TaskService;
 import lombok.AllArgsConstructor;
@@ -17,5 +16,15 @@ public class TaskController {
     @PostMapping("/api/v1/tasks/{semesterId}/{subjectId}")
     public void addNewTask(@RequestBody Task task, @PathVariable("semesterId") Long semesterId, @PathVariable("subjectId") Long subjectId) {
         taskService.addNewTask(task, semesterId, subjectId);
+    }
+
+    @PutMapping("/api/v1/tasks/undone/{taskId}")
+    public void makeTaskDone(@PathVariable("taskId") Long taskId) {
+        taskService.makeTaskDone(taskId);
+    }
+
+    @PutMapping("/api/v1/tasks/done/{taskId}")
+    public void makeTaskUndone(@PathVariable("taskId") Long taskId) {
+        taskService.makeTaskUndone(taskId);
     }
 }

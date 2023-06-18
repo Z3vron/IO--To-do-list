@@ -81,8 +81,8 @@ public class AuthenticationService {
             subject.setTasks(taskBySubject);
         }
 
-//        String jwtToken = jwtService.generateToken(user);
-        String jwtToken = "";
+        String jwtToken = jwtService.generateToken(user);
+//        String jwtToken = "";
         return AuthenticationResponse.builder()
                 .token(jwtToken)
                 .user(user)

@@ -2,6 +2,7 @@ package io.project.todoapp.config;
 
 import io.project.todoapp.model.Semester;
 import io.project.todoapp.model.Subject;
+import io.project.todoapp.model.Task;
 import io.project.todoapp.repository.SemesterRepository;
 import io.project.todoapp.security.auth.AuthenticationService;
 import io.project.todoapp.security.auth.RegisterClassPresidentRequest;
@@ -44,6 +45,8 @@ public class DataInitializer implements CommandLineRunner {
                         .build()
         );
 
+
+
         Semester semesterFirst2020 = Semester.builder()
                 .year(2020)
                 .startDate(LocalDate.of(2020, 10, 1))
@@ -52,6 +55,28 @@ public class DataInitializer implements CommandLineRunner {
                 .number(1)
                 .build();
 
+        semesterFirst2020.getSubjects().forEach(subject -> {
+            subject.setTasks(List.of(
+                    Task.builder()
+                            .userId(1L)
+                            .subjectId(subject.getId())
+                            .name("Kolokwium 1")
+                            .description("Zaliczenie w formie ustnej")
+                            .build(),
+                    Task.builder()
+                            .userId(1L)
+                            .subjectId(subject.getId())
+                            .name("Kolokwium 2")
+                            .description("Zaliczenie w formie pisemnej")
+                            .build(),
+                    Task.builder()
+                            .userId(1L)
+                            .subjectId(subject.getId())
+                            .name("Egzamin")
+                            .description("Nie do zdania")
+                            .build()
+            ));
+        });
 
         List<Subject> subjectsForSecondSemester2020 = List.of(
                 Subject.builder()
@@ -88,14 +113,23 @@ public class DataInitializer implements CommandLineRunner {
 
     private void initClassPresident(Semester semester) {
 
-          authenticationService.registerClassPresident(
+        authenticationService.registerClassPresident(
                 RegisterClassPresidentRequest.builder()
-                        .email("class_president_2020_1@poczta.pl")
-                        .password("qwerty1234")
-                        .firstName("Jan")
-                        .lastName("Kowalski")
+                        .email("a")
+                        .password("a")
+                        .firstName("a")
+                        .lastName("a")
                         .semester(semester)
-                .build());
+                        .build());
+
+//          authenticationService.registerClassPresident(
+//                RegisterClassPresidentRequest.builder()
+//                        .email("class_president_2020_1@poczta.pl")
+//                        .password("qwerty1234")
+//                        .firstName("Jan")
+//                        .lastName("Kowalski")
+//                        .semester(semester)
+//                .build());
 
     }
 }

@@ -18,6 +18,11 @@ public class TaskController {
         taskService.addNewTask(task, semesterId, subjectId);
     }
 
+    @DeleteMapping("/api/v1/tasks/{taskId}")
+    public void removeTask(@PathVariable("taskId") Long taskId) {
+        taskService.removeTask(taskId);
+    }
+
     @PutMapping("/api/v1/tasks/undone/{taskId}")
     public void makeTaskDone(@PathVariable("taskId") Long taskId) {
         taskService.makeTaskDone(taskId);

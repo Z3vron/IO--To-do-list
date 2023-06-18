@@ -1,4 +1,4 @@
-
+import { addAlert } from "./alerts.js";
 
 document.addEventListener('DOMContentLoaded', () => {
     
@@ -17,25 +17,28 @@ const subjectManagementLogic = () => {
         const subjectRecord = e.currentTarget.parentNode.parentNode;
 
         if (button.parentNode.classList.contains('usun')) {
+            var messageStatus = 'danger';
             var message = 'Usunięto przedmiot: ' + subjectRecord.querySelector('.subject_name').innerHTML;
             subjectRecord.remove()
         }
-        if (button.parentNode.classList.contains('zawies')) {
+        if (button.parentNode.classList.contains('zawies')) {var messageStatus = 'danger';
+            var messageStatus = 'warning';
             var message = 'Zawieszono przedmiot: ' + subjectRecord.querySelector('.subject_name').innerHTML;
             button.parentNode.classList.toggle('d-none')
             subjectRecord.querySelector('.otworz').classList.toggle('d-none')
         }
         if (button.parentNode.classList.contains('otworz')) {
+            var messageStatus = 'success';
             var message = 'Zaakceptowano ticket: ' + subjectRecord.querySelector('.subject_name').innerHTML;
             button.parentNode.classList.toggle('d-none')
             subjectRecord.querySelector('.zawies').classList.toggle('d-none')
         }
 
-        setTimeout(function() { alert(message); }, 10);
+        addAlert(messageStatus,message);
     }))
 
     
-    button_dodaj_przedmiot  = document.querySelector('#dodaj_przedmiot_przycisk')
+    const button_dodaj_przedmiot  = document.querySelector('#dodaj_przedmiot_przycisk')
     button_dodaj_przedmiot.addEventListener('click', (e) => {
       document.querySelector('#dodaj_przedmiot_form').style.display = 'flex';
       e.target.style.display = 'none'
@@ -49,27 +52,31 @@ const ticketManagementLogic = () => {
     buttons.forEach(button => button.addEventListener('click', e => {
         const ticketRecord = e.currentTarget.parentNode.parentNode;
 
-        if (button.classList.contains('reject_btn')) 
+        if (e.target.classList.contains('reject_btn')) {
+            var messageStatus = 'danger';
             var message = 'Odrzucono ticket: ' + ticketRecord.querySelector('.ticket_name').innerHTML;
-        if (button.classList.contains('accept_btn'))
+        }
+        else if (e.target.classList.contains('accept_btn')){
+            var messageStatus = 'success';
             var message = 'Zaakceptowano ticket: ' + ticketRecord.querySelector('.ticket_name').innerHTML;
+        }
 
         ticketRecord.remove()
-        setTimeout(function() { alert(message); }, 10);
+        addAlert(messageStatus,message);
     }))
 }
 
 
 const ticketManagementInit = () => {
-    akceptuj_list = [...document.querySelectorAll('.akceptuj')]
+    const akceptuj_list = document.querySelectorAll('.akceptuj')
     
     akceptuj_list.forEach(item => {
       item.innerHTML = '<button type="button" class="btn btn-success accept_btn">Akceptuj</button>'
     })
 
-    odzuc_list = [...document.querySelectorAll('.odzuc')]
+    const odrzuc_list = document.querySelectorAll('.odrzuc')
     
-    odzuc_list.forEach(item => {
+    odrzuc_list.forEach(item => {
       item.innerHTML = '<button type="button" class="btn btn-danger reject_btn">Odrzuć</button>'
     })
 }
@@ -153,8 +160,8 @@ const studentManagementInit = () => {
     </ul>\
   </div>'
 
-    przydziel_list = [...document.querySelectorAll('.przydziel')]
-    wypisz_list = [...document.querySelectorAll('.wypisz')]
+    const przydziel_list = document.querySelectorAll('.przydziel')
+    const wypisz_list = document.querySelectorAll('.wypisz')
 
     przydziel_list.forEach(element => {
         element.innerHTML = avaliableListHtml

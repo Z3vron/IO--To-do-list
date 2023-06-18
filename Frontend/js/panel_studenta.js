@@ -1,4 +1,4 @@
-import { dropdownListHtml } from "./html_templates";
+import { dropdownListHtml } from "./html_templates.js";
 
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -8,35 +8,61 @@ document.addEventListener('DOMContentLoaded', () => {
     
     const subjectList = authResponse['user']['actualSemester']['subjects'];
 
-
+    proceedSubjectRecords(subjectList)
 
     console.log(subjectList)
+
+    // const testList = [1,2,3,4]
+    // testList.forEach((a,b,c) => console.log(a,b,c))
 })
 
 const proceedSubjectRecords = (records) => {
-    const subjectList = document.querySelector('#subject_list')
-    records.forEach(record => addSubjectRecord(subjectList,record))
+    const subjectList = document.querySelector('#subject_list tbody')
+    records.forEach( (record,ind) => addSubjectRecord(subjectList,record,ind))
 }
 
 
-const addSubjectRecord = (parent,subject_data) => {
+const addSubjectRecord = (parent,subjectData,subject_ind) => {
     const record = document.createElement('tr');
-    record.innerHTML = dropdownListHtml;
-    parent.append(record)
+
+    record.innerHTML += `<th scope="row" class="subject_num">${subject_ind+1}</th>`;
+    record.innerHTML += `<td class="subject_name">${subjectData['name']}</td>`;
+    record.appendChild(createTaskProgressBar(subjectData['tasks']));
+    record.appendChild(createTaskDropdown(subjectData['tasks']));
+
+    parent.append(record);
 }
 
-document.addEventListener('DOMContentLoaded', () => {
+const createTaskDropdown = (task_data) => {
+    const dropDownMenu = document.createElement('td')
+
+    return dropDownMenu;
+}
+
+const createTaskProgressBar = (task_data) => {
+    const taskBarElem = document.createElement('td');
+    taskBarElem.innerHTML += `<div class="progress" role="progressbar" aria-label="Example with label" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">\
+        <div class="progress-bar" style="width: 25%">25%</div>\
+    </div>`
+    return taskBarElem;
+}
+
+
+
+
+
+// document.addEventListener('DOMContentLoaded', () => {
     
     
-    etapy = [...document.querySelectorAll('.etap')]
+//     const etapy = [...document.querySelectorAll('.etap')]
 
-    etapy.forEach(element => {
-        element.innerHTML = dropdownListHtml
-    });
+//     etapy.forEach(element => {
+//         element.innerHTML = dropdownListHtml
+//     });
 
-    button_stworz_ticket  = document.querySelector('#stworz_ticket_przycisk')
-    button_stworz_ticket.addEventListener('click', (e) => {
-      document.querySelector('#stworz_ticket_form').style.display = 'flex';
-      e.target.style.display = 'none'
-    })
-})
+//     button_stworz_ticket  = document.querySelector('#stworz_ticket_przycisk')
+//     button_stworz_ticket.addEventListener('click', (e) => {
+//       document.querySelector('#stworz_ticket_form').style.display = 'flex';
+//       e.target.style.display = 'none'
+//     })
+// })

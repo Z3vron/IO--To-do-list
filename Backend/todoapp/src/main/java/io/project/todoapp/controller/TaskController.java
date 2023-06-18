@@ -18,8 +18,13 @@ public class TaskController {
         taskService.addNewTask(task, semesterId, subjectId);
     }
 
-    @PutMapping("/api/v1/tasks/{taskId}")
+    @PutMapping("/api/v1/tasks/undone/{taskId}")
     public void makeTaskDone(@PathVariable("taskId") Long taskId) {
         taskService.makeTaskDone(taskId);
+    }
+
+    @PutMapping("/api/v1/tasks/done/{taskId}")
+    public void makeTaskUndone(@PathVariable("taskId") Long taskId) {
+        taskService.makeTaskUndone(taskId);
     }
 }

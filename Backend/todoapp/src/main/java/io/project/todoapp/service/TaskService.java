@@ -34,6 +34,10 @@ public class TaskService {
         }
     }
 
+    public void removeTask(Long taskId) {
+        taskRepository.deleteById(taskId);
+    }
+
     public void makeTaskDone(Long taskId) {
         Task task = getTask(taskId);
         task.setDone(true);

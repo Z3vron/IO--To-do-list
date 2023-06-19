@@ -55,6 +55,7 @@ public class ApplicationConfig {
         return objectMapper;
     }
 
+    @Bean
     public WebMvcConfigurer corsConfigurer() {
         return new WebMvcConfigurer() {
             @Override

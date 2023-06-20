@@ -27,6 +27,7 @@ public class DataInitializer implements CommandLineRunner {
     private final AuthenticationService authenticationService;
     @Override
     public void run(String... args) throws Exception {
+/*
         List<Subject> subjectsForFirstSemester2020 = List.of(Subject.builder()
                         .name("Programowanie w języku Java")
                         .ectsPoints(5)
@@ -130,6 +131,6 @@ public class DataInitializer implements CommandLineRunner {
 //                        .lastName("Kowalski")
 //                        .semester(semester)
 //                .build());
-
+*/
     }
 }

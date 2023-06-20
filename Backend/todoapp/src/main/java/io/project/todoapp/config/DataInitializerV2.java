@@ -5,6 +5,9 @@ import io.project.todoapp.model.Semester;
 import io.project.todoapp.model.Subject;
 import io.project.todoapp.model.Task;
 import io.project.todoapp.repository.SemesterRepository;
+import io.project.todoapp.security.auth.AuthenticationService;
+import io.project.todoapp.security.auth.RegisterClassPresidentRequest;
+import io.project.todoapp.security.auth.RegisterRequest;
 import io.project.todoapp.security.user.Role;
 import io.project.todoapp.security.user.User;
 import io.project.todoapp.security.user.UserRepository;
@@ -33,6 +36,7 @@ public class DataInitializerV2 implements CommandLineRunner
     private final SemesterRepository semesterRepository;
     private final TaskController taskController;
     private final UserRepository userRepository;
+    private final AuthenticationService authenticationService;
 
     @Override
     public void run(String... args)
@@ -186,6 +190,11 @@ public class DataInitializerV2 implements CommandLineRunner
                 }
             }
 
+            for (Semester sem : semesters)
+            {
+                semesterRepository.save(sem);
+            }
+
             {
                 // users
                 XSSFSheet sheet = workbook.getSheetAt(3);
@@ -236,6 +245,26 @@ public class DataInitializerV2 implements CommandLineRunner
                         }
                     }
 
+                    if (role == Role.STUDENT)
+                    {
+                        authenticationService.register(RegisterRequest.builder()
+                                .email(email)
+                                .password(password)
+                                .firstName(firstName)
+                                .lastName(lastName)
+                                .semesterId(actualSemesterId)
+                                .build());
+                    }
+                    else
+                    {
+                        authenticationService.registerClassPresident(RegisterClassPresidentRequest.builder()
+                                .email(email)
+                                .password(password)
+                                .firstName(firstName)
+                                .lastName(lastName)
+                                .semester(semesterToAdd)
+                                .build());
+                    }
                     users.add(new User(id, firstName, lastName, email, password, semesterToAdd, role));
                     logger.info(id + " " + firstName + " " + lastName + " " + email + " " + password + " " + actualSemesterId + " " + role);
                 }
@@ -245,14 +274,7 @@ public class DataInitializerV2 implements CommandLineRunner
             fis.close();
 
             // DODAWANIE DO BAZY
-            for (Semester sem : semesters)
-            {
-                semesterRepository.save(sem);
-            }
-            for (User usr : users)
-            {
-                userRepository.save(usr);
-            }
+
             for (int i = 0; i < tasks.size(); i++)
             {
                 taskController.addNewTask(tasks.get(i), tasksSemestersIds.get(i), tasksSubjectsIds.get(i));

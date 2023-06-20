@@ -5,9 +5,13 @@ import io.project.todoapp.model.Semester;
 import io.project.todoapp.model.Subject;
 import io.project.todoapp.model.Task;
 import io.project.todoapp.repository.SemesterRepository;
+import io.project.todoapp.security.auth.AuthenticationService;
+import io.project.todoapp.security.auth.RegisterClassPresidentRequest;
+import io.project.todoapp.security.auth.RegisterRequest;
 import io.project.todoapp.security.user.Role;
 import io.project.todoapp.security.user.User;
 import io.project.todoapp.security.user.UserRepository;
+import io.project.todoapp.service.SemesterService;
 import lombok.AllArgsConstructor;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
@@ -32,6 +36,7 @@ public class DataInitializerV2 implements CommandLineRunner
     private final SemesterRepository semesterRepository;
     private final TaskController taskController;
     private final UserRepository userRepository;
+    private final AuthenticationService authenticationService;
 
     @Override
     public void run(String... args)
@@ -40,7 +45,7 @@ public class DataInitializerV2 implements CommandLineRunner
         {
             logger.info("EXECUTING : DataInitializerV2");
 
-            FileInputStream fis = new FileInputStream("C:\\Users\\Foxx\\Documents\\6 semestr\\init_data.xlsx");
+            FileInputStream fis = new FileInputStream("Backend\\todoapp\\init_data.xlsx");
             XSSFWorkbook workbook = new XSSFWorkbook(fis);
 
             ArrayList<Task> tasks = new ArrayList<>(); // done
@@ -88,7 +93,7 @@ public class DataInitializerV2 implements CommandLineRunner
                     tasks.add(new Task(id, 0L, 0L, name, description, done));
                     tasksSubjectsIds.add(subjectId);
                     tasksSemestersIds.add(semesterId);
-                    logger.info(id + " " + semesterId + " " + subjectId + " " + name + " " + description + " " + done);
+                    logger.info("ID: " + id + ", Semester ID: " + semesterId + ", Subject ID: " + subjectId + ", Name: " + name + ", Description: " + description + ", Done: " + done);
                 }
             }
 
@@ -122,9 +127,11 @@ public class DataInitializerV2 implements CommandLineRunner
                         cellN++;
                     }
 
-                    subjects.add(new Subject(id, name, ectsPoints, new ArrayList<>()));
+                    subjects.add(new Subject(id, name, ectsPoints, new ArrayList<>(), true));
                     subjectsIds.add(id);
                     logger.info(id + " " + name + " " + ectsPoints + " " + taskIds);
+
+                    taskIds.clear();
                 }
             }
 
@@ -178,7 +185,14 @@ public class DataInitializerV2 implements CommandLineRunner
                     semesters.add(new Semester(id, number, year, subjectsToAdd, startDate, endDate));
                     semestersIds.add(id);
                     logger.info(id + " " + number + " " + year + " " + startDate + " " + endDate + " " + subjectIds);
+
+                    subjectIds.clear();
                 }
+            }
+
+            for (Semester sem : semesters)
+            {
+                semesterRepository.save(sem);
             }
 
             {
@@ -231,6 +245,26 @@ public class DataInitializerV2 implements CommandLineRunner
                         }
                     }
 
+                    if (role == Role.STUDENT)
+                    {
+                        authenticationService.register(RegisterRequest.builder()
+                                .email(email)
+                                .password(password)
+                                .firstName(firstName)
+                                .lastName(lastName)
+                                .semesterId(actualSemesterId)
+                                .build());
+                    }
+                    else
+                    {
+                        authenticationService.registerClassPresident(RegisterClassPresidentRequest.builder()
+                                .email(email)
+                                .password(password)
+                                .firstName(firstName)
+                                .lastName(lastName)
+                                .semester(semesterToAdd)
+                                .build());
+                    }
                     users.add(new User(id, firstName, lastName, email, password, semesterToAdd, role));
                     logger.info(id + " " + firstName + " " + lastName + " " + email + " " + password + " " + actualSemesterId + " " + role);
                 }
@@ -240,23 +274,15 @@ public class DataInitializerV2 implements CommandLineRunner
             fis.close();
 
             // DODAWANIE DO BAZY
-            for (Semester sem : semesters)
-            {
-                semesterRepository.save(sem);
-            }
-            for (User usr : users)
-            {
-                userRepository.save(usr);
-            }
+
             for (int i = 0; i < tasks.size(); i++)
             {
-                taskController.addNewTask(tasks.get(i), tasksSubjectsIds.get(i), tasksSubjectsIds.get(i));
+                taskController.addNewTask(tasks.get(i), tasksSemestersIds.get(i), tasksSubjectsIds.get(i));
             }
-
         }
         catch (Exception e)
         {
-            logger.info("Error occurred: " + e.getMessage());
+            logger.error("Error occurred: " + e.getMessage());
         }
     }
 }

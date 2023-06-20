@@ -1,11 +1,16 @@
 import { addAlert } from "./alerts.js";
+import {proceedSubjectManagementRecords,proceedSubjectCreditRecords} from "./subject_management.js";
 
 document.addEventListener('DOMContentLoaded', () => {
-    
-    ticketManagementInit();
-    subjectManagementInit();
-    studentManagementInit();
 
+    const authResponse = JSON.parse(sessionStorage.getItem('AuthResponse'));
+    const subjectList = authResponse['user']['actualSemester']['subjects'];
+
+    proceedSubjectCreditRecords(subjectList)
+    proceedSubjectManagementRecords(subjectList)
+
+    console.log(subjectList);
+    
     ticketManagementLogic();
     subjectManagementLogic();
 })
@@ -29,7 +34,7 @@ const subjectManagementLogic = () => {
         }
         if (button.parentNode.classList.contains('otworz')) {
             var messageStatus = 'success';
-            var message = 'Zaakceptowano ticket: ' + subjectRecord.querySelector('.subject_name').innerHTML;
+            var message = 'Otworzono przedmiot: ' + subjectRecord.querySelector('.subject_name').innerHTML;
             button.parentNode.classList.toggle('d-none')
             subjectRecord.querySelector('.zawies').classList.toggle('d-none')
         }
@@ -58,6 +63,7 @@ const ticketManagementLogic = () => {
         }
         else if (e.target.classList.contains('accept_btn')){
             var messageStatus = 'success';
+            console.log(e.target)
             var message = 'Zaakceptowano ticket: ' + ticketRecord.querySelector('.ticket_name').innerHTML;
         }
 
@@ -83,6 +89,9 @@ const ticketManagementInit = () => {
 
 
 const subjectManagementInit = () => {
+
+
+
     const buttonWrappers = document.querySelectorAll('.subject_record .button_wrapper');
     buttonWrappers.forEach(wrapper => {
         if (wrapper.classList.contains('usun'))

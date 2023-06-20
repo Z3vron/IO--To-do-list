@@ -4,12 +4,15 @@ import io.project.todoapp.model.Semester;
 import io.project.todoapp.model.Subject;
 import io.project.todoapp.model.Task;
 import io.project.todoapp.repository.SemesterRepository;
+import io.project.todoapp.repository.TaskRepository;
 import io.project.todoapp.security.auth.AuthenticationService;
 import io.project.todoapp.security.auth.RegisterClassPresidentRequest;
 import io.project.todoapp.security.auth.RegisterRequest;
 import io.project.todoapp.security.user.Role;
 import io.project.todoapp.security.user.User;
 import io.project.todoapp.security.user.UserRepository;
+import io.project.todoapp.service.TaskService;
+import io.project.todoapp.service.UserService;
 import lombok.AllArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
@@ -25,8 +28,11 @@ public class DataInitializer implements CommandLineRunner {
     private final UserRepository userRepository;
     private final SemesterRepository semesterRepository;
     private final AuthenticationService authenticationService;
+
+    private final TaskService taskService;
     @Override
     public void run(String... args) throws Exception {
+
         List<Subject> subjectsForFirstSemester2020 = List.of(Subject.builder()
                         .name("Programowanie w języku Java")
                         .ectsPoints(5)
@@ -55,28 +61,7 @@ public class DataInitializer implements CommandLineRunner {
                 .number(1)
                 .build();
 
-        semesterFirst2020.getSubjects().forEach(subject -> {
-            subject.setTasks(List.of(
-                    Task.builder()
-                            .userId(1L)
-                            .subjectId(subject.getId())
-                            .name("Kolokwium 1")
-                            .description("Zaliczenie w formie ustnej")
-                            .build(),
-                    Task.builder()
-                            .userId(1L)
-                            .subjectId(subject.getId())
-                            .name("Kolokwium 2")
-                            .description("Zaliczenie w formie pisemnej")
-                            .build(),
-                    Task.builder()
-                            .userId(1L)
-                            .subjectId(subject.getId())
-                            .name("Egzamin")
-                            .description("Nie do zdania")
-                            .build()
-            ));
-        });
+
 
         List<Subject> subjectsForSecondSemester2020 = List.of(
                 Subject.builder()
@@ -106,9 +91,23 @@ public class DataInitializer implements CommandLineRunner {
                 .build();
 
         semesterRepository.save(semesterFirst2020);
+        semesterRepository.save(semesterSecond2020);
+
         initClassPresident(semesterFirst2020);
 
-        semesterRepository.save(semesterSecond2020);
+        taskService.addNewTask(Task.builder().name("Pierwsze kolokwium").description("asdf").done(false).build(),1L,1L);
+        taskService.addNewTask(Task.builder().name("Drugie kolokwium").description("asdf").done(true).build(),1L,1L);
+        taskService.addNewTask(Task.builder().name("Egzamin").description("asdf").done(true).build(),1L,1L);
+        taskService.addNewTask(Task.builder().name("Pierwsze kolokwium").description("asdf").done(false).build(),1L,2L);
+        taskService.addNewTask(Task.builder().name("Drugie kolokwium").description("asdf").done(false).build(),1L,2L);
+        taskService.addNewTask(Task.builder().name("Egzamin").description("asdf").done(false).build(),1L,2L);
+        taskService.addNewTask(Task.builder().name("Pierwsze kolokwium").description("asdf").done(false).build(),1L,3L);
+        taskService.addNewTask(Task.builder().name("Drugie kolokwium").description("asdf").done(true).build(),1L,3L);
+        taskService.addNewTask(Task.builder().name("Egzamin").description("asdf").done(false).build(),1L,3L);
+        taskService.addNewTask(Task.builder().name("Pierwsze kolokwium").description("asdf").done(false).build(),1L,4L);
+        taskService.addNewTask(Task.builder().name("Drugie kolokwium").description("asdf").done(false).build(),1L,4L);
+//        taskService.addNewTask(Task.builder().name("Egzamin").description("asdf").done(false).build(),1L,4L);
+
     }
 
     private void initClassPresident(Semester semester) {

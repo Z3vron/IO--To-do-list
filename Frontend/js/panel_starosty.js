@@ -11,8 +11,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     console.log(subjectList);
     
-    ticketManagementLogic();
     subjectManagementLogic();
+    subjectCreditLogic();
 })
 
 const subjectManagementLogic = () => {
@@ -48,6 +48,41 @@ const subjectManagementLogic = () => {
       document.querySelector('#dodaj_przedmiot_form').style.display = 'flex';
       e.target.style.display = 'none'
     })
+}
+
+
+const subjectCreditLogic = () => {
+  const creditButtons = document.querySelectorAll('[dropdown-button]')
+  creditButtons.forEach(button => button.addEventListener('click',e => {
+    const taskInputs = e.target.parentNode.parentNode.parentNode.querySelectorAll('.form-check input')
+    
+    taskInputs.forEach(taskInput => {
+      // if (taskInput.checked) {
+        
+      // } else {
+      //   console.log('unchecked')
+      // }
+      sendTaskUpdateRequest(taskInput)
+    })
+  }))
+}
+
+
+const sendTaskUpdateRequest = (taskInput) => {
+  const req = new XMLHttpRequest
+
+  if (taskInput.checked) {
+    req.open('PUT',`http://localhost:8080/api/v1/tasks/undone/${taskInput.id}`,false)
+  } else {
+    req.open('PUT',`http://localhost:8080/api/v1/tasks/done/${taskInput.id}`,false)
+  }
+  req.setRequestHeader('Content-Type','application/json')
+  req.send(JSON.stringify({}))
+  console.log(req)
+
+  if (req.status != 200)  {
+      setTimeout(function() { alert("Coś poszło nie tak..."); }, 10);
+  }
 }
 
 

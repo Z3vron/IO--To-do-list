@@ -18,16 +18,19 @@ public class TaskController {
         taskService.addNewTask(task, semesterId, subjectId);
     }
 
+    @CrossOrigin(origins = "*")
     @DeleteMapping("/api/v1/tasks/{taskId}")
     public void removeTask(@PathVariable("taskId") Long taskId) {
         taskService.removeTask(taskId);
     }
 
+    @CrossOrigin(origins = "*")
     @PutMapping("/api/v1/tasks/undone/{taskId}")
     public void makeTaskDone(@PathVariable("taskId") Long taskId) {
         taskService.makeTaskDone(taskId);
     }
 
+    @CrossOrigin(origins = "*")
     @PutMapping("/api/v1/tasks/done/{taskId}")
     public void makeTaskUndone(@PathVariable("taskId") Long taskId) {
         taskService.makeTaskUndone(taskId);

@@ -2,6 +2,7 @@ package io.project.todoapp.config;
 
 import io.project.todoapp.model.Semester;
 import io.project.todoapp.model.Subject;
+import io.project.todoapp.model.Task;
 import io.project.todoapp.repository.SemesterRepository;
 import io.project.todoapp.security.auth.AuthenticationService;
 import io.project.todoapp.security.auth.RegisterClassPresidentRequest;
@@ -9,6 +10,7 @@ import io.project.todoapp.security.auth.RegisterRequest;
 import io.project.todoapp.security.user.Role;
 import io.project.todoapp.security.user.User;
 import io.project.todoapp.security.user.UserRepository;
+import io.project.todoapp.service.TaskService;
 import lombok.AllArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
@@ -24,6 +26,7 @@ public class DataInitializer implements CommandLineRunner {
     private final UserRepository userRepository;
     private final SemesterRepository semesterRepository;
     private final AuthenticationService authenticationService;
+    private final TaskService taskService;
     @Override
     public void run(String... args) throws Exception {
         List<Subject> subjectsForFirstSemester2020 = List.of(Subject.builder()
@@ -82,6 +85,35 @@ public class DataInitializer implements CommandLineRunner {
 
         semesterRepository.save(semesterFirst2020);
         initClassPresident(semesterFirst2020);
+
+        RegisterRequest registerRequest1 = RegisterRequest.builder()
+                .firstName("Jan")
+                .lastName("Kowal")
+                .email("test1@gmail.com")
+                .password("qwerty")
+                .semesterId(1L)
+                .build();
+        RegisterRequest registerRequest2 = RegisterRequest.builder()
+                .firstName("Grzegorz")
+                .lastName("Brzeczyszczykiewicz")
+                .email("test2@gmail.com")
+                .password("qwerty")
+                .semesterId(1L)
+                .build();
+
+        authenticationService.register(registerRequest1);
+        authenticationService.register(registerRequest2);
+
+        Task task1 = Task.builder()
+                .name("Kolokwium zaliczeniowe")
+                .description("bla bla bla bla")
+                .build();
+        Task task2 = Task.builder()
+                .name("Projekt")
+                .description("bla bla bla bla")
+                .build();
+        taskService.addNewTask(task1, 1L, 1L);
+        taskService.addNewTask(task2, 1L, 2L);
 
         semesterRepository.save(semesterSecond2020);
     }

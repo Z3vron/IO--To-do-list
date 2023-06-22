@@ -1,13 +1,18 @@
-
+import { addAlert } from "./alerts.js";
+import {proceedSubjectManagementRecords,proceedSubjectCreditRecords} from "./subject_management.js";
 
 document.addEventListener('DOMContentLoaded', () => {
-    
-    ticketManagementInit();
-    subjectManagementInit();
-    studentManagementInit();
 
-    ticketManagementLogic();
+    const authResponse = JSON.parse(sessionStorage.getItem('AuthResponse'));
+    const subjectList = authResponse['user']['actualSemester']['subjects'];
+
+    proceedSubjectCreditRecords(subjectList)
+    proceedSubjectManagementRecords(subjectList)
+
+    console.log(subjectList);
+    
     subjectManagementLogic();
+    subjectCreditLogic();
 })
 
 const subjectManagementLogic = () => {
@@ -17,29 +22,67 @@ const subjectManagementLogic = () => {
         const subjectRecord = e.currentTarget.parentNode.parentNode;
 
         if (button.parentNode.classList.contains('usun')) {
+            var messageStatus = 'danger';
             var message = 'Usunięto przedmiot: ' + subjectRecord.querySelector('.subject_name').innerHTML;
             subjectRecord.remove()
         }
-        if (button.parentNode.classList.contains('zawies')) {
+        if (button.parentNode.classList.contains('zawies')) {var messageStatus = 'danger';
+            var messageStatus = 'warning';
             var message = 'Zawieszono przedmiot: ' + subjectRecord.querySelector('.subject_name').innerHTML;
             button.parentNode.classList.toggle('d-none')
             subjectRecord.querySelector('.otworz').classList.toggle('d-none')
         }
         if (button.parentNode.classList.contains('otworz')) {
-            var message = 'Zaakceptowano ticket: ' + subjectRecord.querySelector('.subject_name').innerHTML;
+            var messageStatus = 'success';
+            var message = 'Otworzono przedmiot: ' + subjectRecord.querySelector('.subject_name').innerHTML;
             button.parentNode.classList.toggle('d-none')
             subjectRecord.querySelector('.zawies').classList.toggle('d-none')
         }
 
-        setTimeout(function() { alert(message); }, 10);
+        addAlert(messageStatus,message);
     }))
 
     
-    button_dodaj_przedmiot  = document.querySelector('#dodaj_przedmiot_przycisk')
+    const button_dodaj_przedmiot  = document.querySelector('#dodaj_przedmiot_przycisk')
     button_dodaj_przedmiot.addEventListener('click', (e) => {
       document.querySelector('#dodaj_przedmiot_form').style.display = 'flex';
       e.target.style.display = 'none'
     })
+}
+
+
+const subjectCreditLogic = () => {
+  const creditButtons = document.querySelectorAll('[dropdown-button]')
+  creditButtons.forEach(button => button.addEventListener('click',e => {
+    const taskInputs = e.target.parentNode.parentNode.parentNode.querySelectorAll('.form-check input')
+    
+    taskInputs.forEach(taskInput => {
+      // if (taskInput.checked) {
+        
+      // } else {
+      //   console.log('unchecked')
+      // }
+      sendTaskUpdateRequest(taskInput)
+    })
+  }))
+}
+
+
+const sendTaskUpdateRequest = (taskInput) => {
+  const req = new XMLHttpRequest
+
+  if (taskInput.checked) {
+    req.open('PUT',`http://localhost:8080/api/v1/tasks/undone/${taskInput.id}`,false)
+  } else {
+    req.open('PUT',`http://localhost:8080/api/v1/tasks/done/${taskInput.id}`,false)
+  }
+  req.setRequestHeader('Content-Type','application/json')
+  req.send(JSON.stringify({}))
+  console.log(req)
+
+  if (req.status != 200)  {
+      setTimeout(function() { alert("Coś poszło nie tak..."); }, 10);
+  }
 }
 
 
@@ -49,33 +92,41 @@ const ticketManagementLogic = () => {
     buttons.forEach(button => button.addEventListener('click', e => {
         const ticketRecord = e.currentTarget.parentNode.parentNode;
 
-        if (button.classList.contains('reject_btn')) 
+        if (e.target.classList.contains('reject_btn')) {
+            var messageStatus = 'danger';
             var message = 'Odrzucono ticket: ' + ticketRecord.querySelector('.ticket_name').innerHTML;
-        if (button.classList.contains('accept_btn'))
+        }
+        else if (e.target.classList.contains('accept_btn')){
+            var messageStatus = 'success';
+            console.log(e.target)
             var message = 'Zaakceptowano ticket: ' + ticketRecord.querySelector('.ticket_name').innerHTML;
+        }
 
         ticketRecord.remove()
-        setTimeout(function() { alert(message); }, 10);
+        addAlert(messageStatus,message);
     }))
 }
 
 
 const ticketManagementInit = () => {
-    akceptuj_list = [...document.querySelectorAll('.akceptuj')]
+    const akceptuj_list = document.querySelectorAll('.akceptuj')
     
     akceptuj_list.forEach(item => {
       item.innerHTML = '<button type="button" class="btn btn-success accept_btn">Akceptuj</button>'
     })
 
-    odzuc_list = [...document.querySelectorAll('.odzuc')]
+    const odrzuc_list = document.querySelectorAll('.odrzuc')
     
-    odzuc_list.forEach(item => {
+    odrzuc_list.forEach(item => {
       item.innerHTML = '<button type="button" class="btn btn-danger reject_btn">Odrzuć</button>'
     })
 }
 
 
 const subjectManagementInit = () => {
+
+
+
     const buttonWrappers = document.querySelectorAll('.subject_record .button_wrapper');
     buttonWrappers.forEach(wrapper => {
         if (wrapper.classList.contains('usun'))
@@ -153,8 +204,8 @@ const studentManagementInit = () => {
     </ul>\
   </div>'
 
-    przydziel_list = [...document.querySelectorAll('.przydziel')]
-    wypisz_list = [...document.querySelectorAll('.wypisz')]
+    const przydziel_list = document.querySelectorAll('.przydziel')
+    const wypisz_list = document.querySelectorAll('.wypisz')
 
     przydziel_list.forEach(element => {
         element.innerHTML = avaliableListHtml

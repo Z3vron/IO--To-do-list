@@ -1,43 +1,43 @@
-const getSemesters = () => {
-    const req = new XMLHttpRequest;
-    req.open('GET','http://localhost:8080/api/v1/init/semesters',false)
-    req.send()
-    console.log(req.responseText)
-}
+// const getSemesters = () => {
+//     const req = new XMLHttpRequest;
+//     req.open('GET','http://localhost:8080/api/v1/init/semesters',false)
+//     req.send()
+//     console.log(req.responseText)
+// }
 
-const registerRequest = () => { 
-    const req = new XMLHttpRequest
-    req.open('POST','http://localhost:8080/api/v1/auth/register',false)
-    req.setRequestHeader('Content-Type','application/json')
-    req.send(
-        JSON.stringify( { 
-            "firstName" : "Jan",
-            "lastName" : "Nowak",
-            "email" : "student7@interia.pl",
-            "password" : "password",
-            "semesterId" : 1
-        })
-    )
-    console.log(req.responseText)
-}
+// const registerRequest = () => { 
+//     const req = new XMLHttpRequest
+//     req.open('POST','http://localhost:8080/api/v1/auth/register',false)
+//     req.setRequestHeader('Content-Type','application/json')
+//     req.send(
+//         JSON.stringify( { 
+//             "firstName" : "Jan",
+//             "lastName" : "Nowak",
+//             "email" : "student7@interia.pl",
+//             "password" : "password",
+//             "semesterId" : 1
+//         })
+//     )
+//     console.log(req.responseText)
+// }
 
-const checkCredentials = () => {
-    const req = new XMLHttpRequest;
-    req.open('POST','http://localhost:8080/api/v1/auth/authenticate',false)
-    req.setRequestHeader('Content-Type','application/json')
-    req.send(JSON.stringify(
-                    {
-                        "email":"student6@interia.pl",
-                        "password":"password"
-                    })
-            );
+// const checkCredentials = () => {
+//     const req = new XMLHttpRequest;
+//     req.open('POST','http://localhost:8080/api/v1/auth/authenticate',false)
+//     req.setRequestHeader('Content-Type','application/json')
+//     req.send(JSON.stringify(
+//                     {
+//                         "email":"student6@interia.pl",
+//                         "password":"password"
+//                     })
+//             );
 
-    console.log(req);
+//     console.log(req);
 
-    // req.open('GET','http://localhost:8080/api/v1/init/semesters',false)
-    // req.send()
-    // console.log(req.responseText)
-}
+//     // req.open('GET','http://localhost:8080/api/v1/init/semesters',false)
+//     // req.send()
+//     // console.log(req.responseText)
+// }
 
 
 
@@ -52,6 +52,8 @@ document.addEventListener('DOMContentLoaded', () => {
 const registrationLogic = () => {
     const registrationButton = document.querySelector('#register_button');
 
+    console.log(document.querySelector('fieldset [checked]').parentNode.id)
+
     registrationButton.addEventListener('click', () => {
 
         const formData = {
@@ -59,7 +61,7 @@ const registrationLogic = () => {
             "lastName" : document.querySelector('#last_name').value,
             "email" : document.querySelector('#email').value,
             "password" : document.querySelector('#password').value,
-            "semesterId" : 1
+            "semesterId" : parseInt(document.querySelector('fieldset [checked]').parentNode.id)
         }
 
         requestBody = validateCredentials(formData)

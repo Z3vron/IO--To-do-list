@@ -4,6 +4,7 @@ import io.project.todoapp.model.Semester;
 import io.project.todoapp.model.Subject;
 import io.project.todoapp.model.Task;
 import io.project.todoapp.repository.SemesterRepository;
+import io.project.todoapp.repository.TaskRepository;
 import io.project.todoapp.security.auth.AuthenticationService;
 import io.project.todoapp.security.auth.RegisterClassPresidentRequest;
 import io.project.todoapp.security.auth.RegisterRequest;
@@ -11,6 +12,7 @@ import io.project.todoapp.security.user.Role;
 import io.project.todoapp.security.user.User;
 import io.project.todoapp.security.user.UserRepository;
 import io.project.todoapp.service.TaskService;
+import io.project.todoapp.service.UserService;
 import lombok.AllArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
@@ -27,8 +29,10 @@ public class DataInitializer implements CommandLineRunner {
     private final SemesterRepository semesterRepository;
     private final AuthenticationService authenticationService;
     private final TaskService taskService;
+  
     @Override
     public void run(String... args) throws Exception {
+/*
         List<Subject> subjectsForFirstSemester2020 = List.of(Subject.builder()
                         .name("Programowanie w języku Java")
                         .ectsPoints(5)
@@ -47,6 +51,8 @@ public class DataInitializer implements CommandLineRunner {
                         .build()
         );
 
+
+
         Semester semesterFirst2020 = Semester.builder()
                 .year(2020)
                 .startDate(LocalDate.of(2020, 10, 1))
@@ -54,6 +60,7 @@ public class DataInitializer implements CommandLineRunner {
                 .subjects(subjectsForFirstSemester2020)
                 .number(1)
                 .build();
+
 
 
         List<Subject> subjectsForSecondSemester2020 = List.of(
@@ -84,6 +91,8 @@ public class DataInitializer implements CommandLineRunner {
                 .build();
 
         semesterRepository.save(semesterFirst2020);
+        semesterRepository.save(semesterSecond2020);
+
         initClassPresident(semesterFirst2020);
 
         RegisterRequest registerRequest1 = RegisterRequest.builder()
@@ -116,18 +125,41 @@ public class DataInitializer implements CommandLineRunner {
         taskService.addNewTask(task2, 1L, 2L);
 
         semesterRepository.save(semesterSecond2020);
+
+        taskService.addNewTask(Task.builder().name("Pierwsze kolokwium").description("asdf").done(false).build(),1L,1L);
+        taskService.addNewTask(Task.builder().name("Drugie kolokwium").description("asdf").done(true).build(),1L,1L);
+        taskService.addNewTask(Task.builder().name("Egzamin").description("asdf").done(true).build(),1L,1L);
+        taskService.addNewTask(Task.builder().name("Pierwsze kolokwium").description("asdf").done(false).build(),1L,2L);
+        taskService.addNewTask(Task.builder().name("Drugie kolokwium").description("asdf").done(false).build(),1L,2L);
+        taskService.addNewTask(Task.builder().name("Egzamin").description("asdf").done(false).build(),1L,2L);
+        taskService.addNewTask(Task.builder().name("Pierwsze kolokwium").description("asdf").done(false).build(),1L,3L);
+        taskService.addNewTask(Task.builder().name("Drugie kolokwium").description("asdf").done(true).build(),1L,3L);
+        taskService.addNewTask(Task.builder().name("Egzamin").description("asdf").done(false).build(),1L,3L);
+        taskService.addNewTask(Task.builder().name("Pierwsze kolokwium").description("asdf").done(false).build(),1L,4L);
+        taskService.addNewTask(Task.builder().name("Drugie kolokwium").description("asdf").done(false).build(),1L,4L);
+//        taskService.addNewTask(Task.builder().name("Egzamin").description("asdf").done(false).build(),1L,4L);
+
     }
 
     private void initClassPresident(Semester semester) {
 
-          authenticationService.registerClassPresident(
+        authenticationService.registerClassPresident(
                 RegisterClassPresidentRequest.builder()
-                        .email("class_president_2020_1@poczta.pl")
-                        .password("qwerty1234")
-                        .firstName("Jan")
-                        .lastName("Kowalski")
+                        .email("a")
+                        .password("a")
+                        .firstName("a")
+                        .lastName("a")
                         .semester(semester)
-                .build());
+                        .build());
 
+//          authenticationService.registerClassPresident(
+//                RegisterClassPresidentRequest.builder()
+//                        .email("class_president_2020_1@poczta.pl")
+//                        .password("qwerty1234")
+//                        .firstName("Jan")
+//                        .lastName("Kowalski")
+//                        .semester(semester)
+//                .build());
+*/
     }
 }

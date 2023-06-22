@@ -26,6 +26,6 @@ public class Subject {
     @OneToMany(cascade = CascadeType.ALL)
     @Transient
     private List<Task> tasks = Collections.emptyList();
-
+    private boolean active = true;
 
 }

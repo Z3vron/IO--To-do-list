@@ -28,8 +28,6 @@ export function addAlert(alertType,alertMessage) {
         if (alertList.children.length == 0)
             alertList.remove()
     }, 3500);
-
-    console.log(alertList);
 }
 
 const createAlert = (alertMessage,alertClassList) => {

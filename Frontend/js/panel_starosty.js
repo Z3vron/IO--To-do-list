@@ -1,13 +1,18 @@
 import { addAlert } from "./alerts.js";
+import {proceedSubjectManagementRecords,proceedSubjectCreditRecords} from "./subject_management.js";
 
 document.addEventListener('DOMContentLoaded', () => {
-    
-    ticketManagementInit();
-    subjectManagementInit();
-    studentManagementInit();
 
-    ticketManagementLogic();
+    const authResponse = JSON.parse(sessionStorage.getItem('AuthResponse'));
+    const subjectList = authResponse['user']['actualSemester']['subjects'];
+
+    proceedSubjectCreditRecords(subjectList)
+    proceedSubjectManagementRecords(subjectList)
+
+    console.log(subjectList);
+    
     subjectManagementLogic();
+    subjectCreditLogic();
 })
 
 const subjectManagementLogic = () => {
@@ -29,7 +34,7 @@ const subjectManagementLogic = () => {
         }
         if (button.parentNode.classList.contains('otworz')) {
             var messageStatus = 'success';
-            var message = 'Zaakceptowano ticket: ' + subjectRecord.querySelector('.subject_name').innerHTML;
+            var message = 'Otworzono przedmiot: ' + subjectRecord.querySelector('.subject_name').innerHTML;
             button.parentNode.classList.toggle('d-none')
             subjectRecord.querySelector('.zawies').classList.toggle('d-none')
         }
@@ -46,6 +51,41 @@ const subjectManagementLogic = () => {
 }
 
 
+const subjectCreditLogic = () => {
+  const creditButtons = document.querySelectorAll('[dropdown-button]')
+  creditButtons.forEach(button => button.addEventListener('click',e => {
+    const taskInputs = e.target.parentNode.parentNode.parentNode.querySelectorAll('.form-check input')
+    
+    taskInputs.forEach(taskInput => {
+      // if (taskInput.checked) {
+        
+      // } else {
+      //   console.log('unchecked')
+      // }
+      sendTaskUpdateRequest(taskInput)
+    })
+  }))
+}
+
+
+const sendTaskUpdateRequest = (taskInput) => {
+  const req = new XMLHttpRequest
+
+  if (taskInput.checked) {
+    req.open('PUT',`http://localhost:8080/api/v1/tasks/undone/${taskInput.id}`,false)
+  } else {
+    req.open('PUT',`http://localhost:8080/api/v1/tasks/done/${taskInput.id}`,false)
+  }
+  req.setRequestHeader('Content-Type','application/json')
+  req.send(JSON.stringify({}))
+  console.log(req)
+
+  if (req.status != 200)  {
+      setTimeout(function() { alert("Coś poszło nie tak..."); }, 10);
+  }
+}
+
+
 const ticketManagementLogic = () => {
     const buttons = document.querySelectorAll('.ticket_record button')
     
@@ -58,6 +98,7 @@ const ticketManagementLogic = () => {
         }
         else if (e.target.classList.contains('accept_btn')){
             var messageStatus = 'success';
+            console.log(e.target)
             var message = 'Zaakceptowano ticket: ' + ticketRecord.querySelector('.ticket_name').innerHTML;
         }
 
@@ -83,6 +124,9 @@ const ticketManagementInit = () => {
 
 
 const subjectManagementInit = () => {
+
+
+
     const buttonWrappers = document.querySelectorAll('.subject_record .button_wrapper');
     buttonWrappers.forEach(wrapper => {
         if (wrapper.classList.contains('usun'))

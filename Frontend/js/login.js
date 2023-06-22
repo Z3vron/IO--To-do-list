@@ -30,7 +30,10 @@ const sendLoginRequest = (body_object) => {
 
     if (req.status == 200) {
         sessionStorage.setItem('AuthResponse',req.responseText)
-        window.location.replace('./panel_studenta.html')
+        if (JSON.parse(req.responseText)['user']['role'] == 'STUDENT')
+            window.location.replace('./panel_studenta.html')
+        else if (JSON.parse(req.responseText)['user']['role'] == 'CLASS_PRESIDENT')
+            window.location.replace('./panel_starosty.html')
     } else {
         setTimeout(function() { alert("Coś poszło nie tak..."); }, 10);
     }

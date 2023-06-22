@@ -24,5 +24,5 @@ public class Task {
     private Long subjectId;
     private String name;
     private String description;
-    private Boolean done = false;
+    private Boolean done;
 }

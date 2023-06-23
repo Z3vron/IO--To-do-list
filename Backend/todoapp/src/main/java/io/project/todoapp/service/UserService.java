@@ -2,6 +2,7 @@ package io.project.todoapp.service;
 
 import io.project.todoapp.model.Subject;
 import io.project.todoapp.model.Task;
+import io.project.todoapp.repository.TaskRepository;
 import io.project.todoapp.security.user.Role;
 import io.project.todoapp.security.user.User;
 import io.project.todoapp.security.user.UserRepository;
@@ -22,14 +23,14 @@ public class UserService {
     private static final String NOT_FOUND_USER_EXCEPTION_MESSAGE = "Student with id: %s not founded";
 
     private final UserRepository userRepository;
-    private final TaskService taskService;
+    private final TaskRepository taskRepository;
 
     public User getStudentById(Long id) {
         Optional<User> foundedUser = userRepository.findById(id);
 
         if(foundedUser.isPresent()) {
             User user = foundedUser.get();
-            List<Task> allTasksByUserId = taskService.findAll().stream().filter(e -> e.getUserId().equals(user.getId())).toList();
+            List<Task> allTasksByUserId = taskRepository.findAll().stream().filter(e -> e.getUserId().equals(user.getId())).toList();
             List<Subject> subjects = user.getActualSemester().getSubjects();
 
             for (Subject subject : subjects) {
@@ -39,7 +40,7 @@ public class UserService {
 
             Role userRole = foundedUser.get().getRole();
             if(userRole.equals(Role.STUDENT) || userRole.equals(Role.CLASS_PRESIDENT)) {
-                return foundedUser.get();
+                return user;
             }
         }
         throw new EntityNotFoundException(String.format(NOT_FOUND_USER_EXCEPTION_MESSAGE, id));

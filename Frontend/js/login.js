@@ -30,6 +30,8 @@ const sendLoginRequest = (body_object) => {
 
     if (req.status == 200) {
         sessionStorage.setItem('AuthResponse',req.responseText)
+        sessionStorage.setItem('Subjects',JSON.stringify(JSON.parse(req.responseText)['user']['actualSemester']['subjects']))
+
         if (JSON.parse(req.responseText)['user']['role'] == 'STUDENT')
             window.location.replace('./panel_studenta.html')
         else if (JSON.parse(req.responseText)['user']['role'] == 'CLASS_PRESIDENT')

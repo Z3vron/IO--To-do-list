@@ -3,8 +3,8 @@ import {proceedSubjectManagementRecords,proceedSubjectCreditRecords} from "./sub
 
 document.addEventListener('DOMContentLoaded', () => {
 
-    const authResponse = JSON.parse(sessionStorage.getItem('AuthResponse'));
-    const subjectList = authResponse['user']['actualSemester']['subjects'];
+    // const authResponse = JSON.parse(sessionStorage.getItem('AuthResponse'));
+    const subjectList = JSON.parse(sessionStorage.getItem('Subjects'));
 
     proceedSubjectCreditRecords(subjectList)
     proceedSubjectManagementRecords(subjectList)
@@ -57,13 +57,10 @@ const subjectCreditLogic = () => {
     const taskInputs = e.target.parentNode.parentNode.parentNode.querySelectorAll('.form-check input')
     
     taskInputs.forEach(taskInput => {
-      // if (taskInput.checked) {
-        
-      // } else {
-      //   console.log('unchecked')
-      // }
       sendTaskUpdateRequest(taskInput)
     })
+
+    refreshSubjectsStored(JSON.parse(sessionStorage.getItem('AuthResponse'))['user']['id'])
   }))
 }
 
@@ -72,17 +69,32 @@ const sendTaskUpdateRequest = (taskInput) => {
   const req = new XMLHttpRequest
 
   if (taskInput.checked) {
-    req.open('PUT',`http://localhost:8080/api/v1/tasks/undone/${taskInput.id}`,false)
-  } else {
     req.open('PUT',`http://localhost:8080/api/v1/tasks/done/${taskInput.id}`,false)
+  } else {
+    req.open('PUT',`http://localhost:8080/api/v1/tasks/undone/${taskInput.id}`,false)
   }
   req.setRequestHeader('Content-Type','application/json')
   req.send(JSON.stringify({}))
-  console.log(req)
 
   if (req.status != 200)  {
       setTimeout(function() { alert("Coś poszło nie tak..."); }, 10);
   }
+}
+
+
+const refreshSubjectsStored = (studentId = 1) => {
+  console.log(sessionStorage.getItem('AuthResponse'))
+  const req = new XMLHttpRequest
+  // req.open('GET',`http://localhost:8080/api/v1/students/${studentId}`,false)
+  req.open('GET',`http://localhost:8080/api/v1/tasks/1/1`,false)
+  req.setRequestHeader('Content-Type','application/json')
+  req.send(JSON.stringify({}))
+
+  console.log(JSON.parse(req.responseText))
+  // const semestrData = JSON.parse(req.responseText).find(semestr => semestr['id'] == semestrId)
+  // console.log(semestrData)
+  // sessionStorage.setItem('Subjects',JSON.stringify(semestrData['subjects']))
+  // proceedSubjectCreditRecords(semestrData['subjects'])
 }
 
 

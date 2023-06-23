@@ -1,6 +1,7 @@
 
 const proceedSubjectCreditRecords = (records) => {
     const subjectList = document.querySelector('#subject_credit_list tbody')
+    subjectList.innerHTML = ''
     records.forEach( (record,ind) => addSubjectCreditRecord(subjectList,record,ind))
 }
 
@@ -97,5 +98,8 @@ const initManagementButtons = (record,id) => {
                             <button type="button" class="btn btn-success" id="${id}_otworz">Otwórz przedmiot</button>
                         </td>`
 }
+
+
+// const getSubjectTaksks
 
 export {proceedSubjectCreditRecords, proceedSubjectManagementRecords}

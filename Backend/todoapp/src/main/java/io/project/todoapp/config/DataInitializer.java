@@ -28,8 +28,8 @@ public class DataInitializer implements CommandLineRunner {
     private final UserRepository userRepository;
     private final SemesterRepository semesterRepository;
     private final AuthenticationService authenticationService;
-
     private final TaskService taskService;
+  
     @Override
     public void run(String... args) throws Exception {
 /*
@@ -94,6 +94,37 @@ public class DataInitializer implements CommandLineRunner {
         semesterRepository.save(semesterSecond2020);
 
         initClassPresident(semesterFirst2020);
+
+        RegisterRequest registerRequest1 = RegisterRequest.builder()
+                .firstName("Jan")
+                .lastName("Kowal")
+                .email("test1@gmail.com")
+                .password("qwerty")
+                .semesterId(1L)
+                .build();
+        RegisterRequest registerRequest2 = RegisterRequest.builder()
+                .firstName("Grzegorz")
+                .lastName("Brzeczyszczykiewicz")
+                .email("test2@gmail.com")
+                .password("qwerty")
+                .semesterId(1L)
+                .build();
+
+        authenticationService.register(registerRequest1);
+        authenticationService.register(registerRequest2);
+
+        Task task1 = Task.builder()
+                .name("Kolokwium zaliczeniowe")
+                .description("bla bla bla bla")
+                .build();
+        Task task2 = Task.builder()
+                .name("Projekt")
+                .description("bla bla bla bla")
+                .build();
+        taskService.addNewTask(task1, 1L, 1L);
+        taskService.addNewTask(task2, 1L, 2L);
+
+        semesterRepository.save(semesterSecond2020);
 
         taskService.addNewTask(Task.builder().name("Pierwsze kolokwium").description("asdf").done(false).build(),1L,1L);
         taskService.addNewTask(Task.builder().name("Drugie kolokwium").description("asdf").done(true).build(),1L,1L);

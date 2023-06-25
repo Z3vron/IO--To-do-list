@@ -21,6 +21,12 @@ public class TaskController {
     }
 
     @CrossOrigin(origins = "*")
+    @DeleteMapping("/api/v1/tasks/remove/{taskName}/{subjectId}")
+    public void removeTaskFromSubject( @PathVariable("taskName") String taskName, @PathVariable("subjectId") Long subjectId) {
+        taskService.removeTaskFromSubject(taskName,subjectId);
+    }
+
+    @CrossOrigin(origins = "*")
     @DeleteMapping("/api/v1/tasks/{taskId}")
     public void removeTask(@PathVariable("taskId") Long taskId) {
         taskService.removeTask(taskId);

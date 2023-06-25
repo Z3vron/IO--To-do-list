@@ -14,14 +14,32 @@ const proceedSubjectManagementRecords = (records) => {
 const addSubjectCreditRecord = (parent,subjectData,subject_ind) => {
     const record = document.createElement('tr');
     record.id = subjectData['id']
-    record.className = 'actual_record'
+    record.className = 'credit_record'
 
     record.innerHTML += `<th scope="row" class="subject_num">${subject_ind+1}</th>`;
     record.innerHTML += `<td class="subject_name">${subjectData['name']}</td>`;
     record.appendChild(createTaskProgressBar(subjectData['tasks']));
     record.appendChild(createSubjectCreditDropdown(subjectData['tasks']));
+    record.appendChild(addNewTaskButton(subjectData));
+    record.appendChild(addRemoveTaskButton(subjectData));
 
     parent.append(record);
+}
+
+const addNewTaskButton = (subjectData) => {
+    const addTaskButton = document.createElement('td')
+    addTaskButton.classList = 'add_task_button'// d-flex justify-content-center'
+    addTaskButton.id = `add_task_button_${subjectData.id}`
+    addTaskButton.innerHTML = '<button type="button" style="width: 50px;display:block;margin:0 auto;" class="btn btn-success">+</button>'
+    return addTaskButton;
+}
+
+const addRemoveTaskButton = (subjectData) => {
+    const removeTaskButton = document.createElement('td')
+    removeTaskButton.classList = 'remove_task_button'//  d-flex justify-content-center'
+    removeTaskButton.id = `remove_task_button_${subjectData.id}`
+    removeTaskButton.innerHTML = '<button type="button" style="width: 50px;display:block;margin:0 auto;" class="btn btn-danger">-</button>'
+    return removeTaskButton;
 }
 
 const addSubjectManagementRecord = (parent, subjectData, subject_ind) => {
@@ -42,7 +60,7 @@ const createSubjectCreditDropdown = (tasks) => {
 
     const dropDownMenu = document.createElement('div')
     dropDownMenu.classList.add('dropdown')
-    dropDownMenu.innerHTML += `<button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+    dropDownMenu.innerHTML += `<button class="btn btn-secondary dropdown-toggle" style="display:block;margin:0 auto;" type="button" data-bs-toggle="dropdown" aria-expanded="false">
                                     Rozwin liste
                                 </button>`;
 
@@ -75,12 +93,10 @@ const createSubjectCreditDropdown = (tasks) => {
 
 
 const createTaskProgressBar = (tasks_arr) => {
-    // tasks_arr.forEach(task => console.log(typeof(task.done)))
-    console.log(tasks_arr)
-    const completedTasks = tasks_arr.filter(task => {console.log(task.done); return task.done }).length
+    const completedTasks = tasks_arr.filter(task => { return task.done }).length
     const percentage = tasks_arr.length > 0 ? Math.floor(completedTasks / tasks_arr.length*100) : 0
-    // console.log(percentage)
     const taskBarElem = document.createElement('td');
+    
     taskBarElem.classList.add('credit_progress')
     taskBarElem.innerHTML += `<div class="progress" role="progressbar" aria-label="Example with label"  aria-valuemin="0" aria-valuemax="100">\
         <div class="progress-bar" style="width: ${percentage > 5 ? percentage : 5}%">${percentage}%</div>\
@@ -102,16 +118,18 @@ const initManagementButtons = (record,id) => {
 }
 
 const refreshSubjectsStored = (studentId = 1) => {
+    console.log('refreshing...')
     const req = new XMLHttpRequest
     req.open('GET',`http://localhost:8080/api/v1/students/${studentId}`,false)
     req.setRequestHeader('Content-Type','application/json')
     req.send(JSON.stringify({}))
   
     sessionStorage.setItem('Subjects',JSON.stringify(JSON.parse(req.responseText)['actualSemester']['subjects']))
+    console.log(JSON.parse(req.responseText)['actualSemester']['subjects'])
   
     var subjectsNewData = JSON.parse(req.responseText).actualSemester.subjects
   
-    const subjectRecords = document.querySelectorAll('#subject_credit_list tr.actual_record')
+    const subjectRecords = document.querySelectorAll('#subject_credit_list tr.credit_record')
   
     subjectRecords.forEach(record => {
       const progressBarWraper = record.querySelector('.credit_progress')

@@ -6,6 +6,9 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @RestController
 @AllArgsConstructor
 @RequestMapping("/api/v1")
@@ -25,6 +28,12 @@ public class UserController {
     @PostMapping(value = ADMIN_PREFIX + "/students")
     public void addNewStudent(@RequestBody User user) {
         userService.addNewStudent(user);
+    }
+
+    @CrossOrigin(origins = "*")
+    @GetMapping("/students/semesters/{semester}")
+    public List<User> getAllStudentsOnSemester(@PathVariable Integer semester) {
+        return userService.getAllStudentsOnSemester(semester);
     }
 
     @DeleteMapping(ADMIN_PREFIX + "/students/{email}")

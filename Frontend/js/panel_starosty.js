@@ -38,37 +38,184 @@ const subjectManagementLogic = () => {
         addAlert(messageStatus,message);
     }))
 
-    
-    const button_dodaj_przedmiot  = document.querySelector('#dodaj_przedmiot_przycisk')
-    button_dodaj_przedmiot.addEventListener('click', (e) => {
-      document.querySelector('#dodaj_przedmiot_form').style.display = 'flex';
-      e.target.style.display = 'none'
-    })
 }
 
 
 const subjectCreditLogic = () => {
   const creditButtons = document.querySelectorAll('[dropdown-button]')
-  creditButtons.forEach(button => button.addEventListener('click',e => {
-    const taskInputs = e.target.parentNode.parentNode.parentNode.querySelectorAll('.form-check input')
-
-    let subjectRecord = e.target.parentNode;
+  creditButtons.forEach(button => {
+      
+    let subjectRecord = button.parentNode;
     while (subjectRecord.nodeName != 'TR') 
-      subjectRecord = subjectRecord.parentNode;
+    subjectRecord = subjectRecord.parentNode;
 
     const subjectId = subjectRecord.id;
-    console.log(subjectId)
     const tasksToUpdate = getTasksBySubjectId(subjectId)
+    
+    addTaskLogic(subjectId);
+    removeTaskLogic(subjectId);
+    refreshSubjectsStored(JSON.parse(sessionStorage.getItem('AuthResponse')).user.id)
 
-    tasksToUpdate.forEach(task => {
-      taskInputs.forEach(taskInput => {
-        if (taskInput.parentNode.querySelector('label').innerText.trim() == task.name)
-          sendTaskUpdateRequest(taskInput.checked,task)
+    button.addEventListener('click',e => {
+      const taskInputs = e.target.parentNode.parentNode.parentNode.querySelectorAll('.form-check input')
+
+      tasksToUpdate.forEach(task => {
+        taskInputs.forEach(taskInput => {
+          if (taskInput.parentNode.querySelector('label').innerText.trim() == task.name)
+            sendTaskUpdateRequest(taskInput.checked,task)
+        })
       })
-    })
 
-    refreshSubjectsStored(JSON.parse(sessionStorage.getItem('AuthResponse'))['user']['id'])
+      refreshSubjectsStored(JSON.parse(sessionStorage.getItem('AuthResponse'))['user']['id'])
+    })
+  }
+  )
+
+}
+
+const addTaskLogic = (subjectId) => {
+  const addTaskButtons = document.querySelectorAll('td.add_task_button button')
+  addTaskButtons.forEach(button => button.addEventListener('click', () => {
+      const president = JSON.parse(sessionStorage.getItem('AuthResponse')).user
+      performTaskAdding(subjectId,president)
   }))
+}
+
+const removeTaskLogic = (subjectId) => {
+  const removeTaskButton = document.getElementById(`${subjectId}`).querySelector('td.remove_task_button button')
+  removeTaskButton.addEventListener('click', () => {
+      performTaskDeletion(subjectId)
+  })
+}
+
+const performTaskDeletion = (subjectId) => {
+  const taskListForDeletion = document.createElement('div')
+  taskListForDeletion.classList = 'modal d-flex justify-content-center'
+  taskListForDeletion.role = 'dialog'
+
+  taskListForDeletion.innerHTML += `<div class="modal-dialog" role="document" style='width:300px'>
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Wybierz które etapy chcesz usunąć</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+          
+          </div>
+          <div class="modal-footer">
+            <button type="button" id="remove_tasks_btn" class="btn btn-danger">Usuń wybrane</button>
+            <button type="button" id="cancel_deleting_task_btn" class="btn btn-secondary" data-dismiss="modal">Wróć</button>
+          </div>
+        </div>
+      </div>>`
+
+  taskListForDeletion.querySelector('.modal-body').appendChild(createTaskListForDeletion(subjectId))
+
+  taskListForDeletion.id = 'task_data_input'
+  taskListForDeletion.style.position = 'absolute'
+  document.querySelector('body').prepend(taskListForDeletion)
+
+  const manageAddingButtons = document.querySelectorAll('.modal-content button');
+  manageAddingButtons.forEach(button => button.addEventListener('click', (e) => {
+      if (e.target.id == 'remove_tasks_btn') {
+        const taskRecords = taskListForDeletion.querySelectorAll('.form-check')
+        taskRecords.forEach(record => {
+          if (record.querySelector('input').checked) {
+            removeTask(record.querySelector('label').innerText.trim(),subjectId)
+          }
+        })
+        refreshSubjectsStored(JSON.parse(sessionStorage.getItem('AuthResponse')).user.id)
+      }
+
+      taskListForDeletion.remove()
+  }))
+}
+
+const createTaskListForDeletion = (subjectId) => {
+  const subject = JSON.parse(sessionStorage.getItem('Subjects')).filter(subject => subject.id == subjectId)[0]
+  const list = document.createElement('ul')
+  subject.tasks.forEach(task => {
+    list.innerHTML +=   `<li>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" value=" " id="${task.id}">
+                                        <label class="form-check-label" for="defaultCheck1">
+                                            ${task.name}
+                                        </label>
+                                    </div>
+                                </li>`
+  })
+  return list
+}
+
+const performTaskAdding = (subjectId,president) => {
+  const taskDataInputForm = document.createElement('div')
+  taskDataInputForm.classList = 'modal d-flex justify-content-center'
+  taskDataInputForm.role = 'dialog'
+
+  taskDataInputForm.innerHTML += `<div class="modal-dialog" role="document" style='width:300px'>
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Dodaj etap zaliczenia</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <input class="form-control" id="task_name_input" type="text" placeholder="Nazwa etapu zaliczenia">
+            <input class="form-control" id="task_description_input" type="text" placeholder="Opis">
+          </div>
+          <div class="modal-footer">
+            <button type="button" id="save_task_btn" class="btn btn-primary">Zapisz</button>
+            <button type="button" id="cancel_adding_task_btn" class="btn btn-secondary" data-dismiss="modal">Wróć</button>
+          </div>
+        </div>
+      </div>>`
+
+  taskDataInputForm.id = 'task_data_input'
+  taskDataInputForm.style.position = 'absolute'
+  document.querySelector('body').prepend(taskDataInputForm)
+
+  const manageAddingButtons = document.querySelectorAll('.modal-content button');
+  manageAddingButtons.forEach(button => button.addEventListener('click', (e) => {
+      if (e.target.id == 'save_task_btn') {
+        var name = taskDataInputForm.querySelector('#task_name_input').value
+        var description = taskDataInputForm.querySelector('#task_description_input').value
+        
+        if (name.trim() != '')
+          addNewTask(subjectId,president,name,description)
+
+        refreshSubjectsStored(JSON.parse(sessionStorage.getItem('AuthResponse')).user.id)
+      }
+
+      taskDataInputForm.remove()
+  }))
+  
+}
+
+const addNewTask = (subjectId,president,name,description) => {
+  // console.log(president.actualSemester.id, +subjectId)
+  const req = new XMLHttpRequest
+  req.open('POST',`http://localhost:8080/api/v1/tasks/${president.actualSemester.id}/${subjectId}`,false)
+  req.setRequestHeader('Content-Type','application/json')
+  req.send(JSON.stringify({
+    "userId" : president.id,
+    "subjectId" : subjectId,
+    "name" : name,
+    "description" : description
+  }))
+
+  // console.log(req)
+}
+
+const removeTask = (task_name,subjectId) => {
+  console.log(task_name)
+  const req = new XMLHttpRequest
+  req.open('DELETE',`http://localhost:8080/api/v1/tasks/remove/${task_name}/${subjectId}`,false)
+  req.setRequestHeader('Content-Type','application/json')
+  req.send(JSON.stringify({}))
+
 }
 
 const getTasksBySubjectId = (subjectId) => {
@@ -78,13 +225,11 @@ const getTasksBySubjectId = (subjectId) => {
   req.send(JSON.stringify({}))
 
   if (req.status == 200) {
-    console.log(JSON.parse(req.responseText))
     return JSON.parse(req.responseText)
   } else {
       setTimeout(function() { alert("Coś poszło nie tak..."); }, 10);
   }
 }
-
 
 
 

@@ -1,16 +1,20 @@
 
 const proceedSubjectCreditRecords = (records) => {
     const subjectList = document.querySelector('#subject_credit_list tbody')
+    subjectList.innerHTML = ''
     records.forEach( (record,ind) => addSubjectCreditRecord(subjectList,record,ind))
 }
 
 const proceedSubjectManagementRecords = (records) => {
     const subjectList = document.querySelector('#subject_management_list tbody')
+    // print(records)
     records.forEach( (record,ind) => addSubjectManagementRecord(subjectList,record,ind))
 }
 
 const addSubjectCreditRecord = (parent,subjectData,subject_ind) => {
     const record = document.createElement('tr');
+    record.id = subjectData['id']
+    record.className = 'actual_record'
 
     record.innerHTML += `<th scope="row" class="subject_num">${subject_ind+1}</th>`;
     record.innerHTML += `<td class="subject_name">${subjectData['name']}</td>`;
@@ -48,7 +52,7 @@ const createSubjectCreditDropdown = (tasks) => {
     tasks.forEach(task => {
         dropDownMenuTaskList.innerHTML +=   `<li>
                                         <div class="form-check">
-                                            <input class="form-check-input" type="checkbox" value=" " id="${task.id}">
+                                            <input class="form-check-input" type="checkbox" value=" " id="${task.id}" ${task.done ? 'checked' : ''}>
                                             <label class="form-check-label" for="defaultCheck1">
                                                 ${task.name}
                                             </label>
@@ -71,16 +75,15 @@ const createSubjectCreditDropdown = (tasks) => {
 
 
 const createTaskProgressBar = (tasks_arr) => {
-
-    const completedTasks = tasks_arr.filter(task => {
-        task['done'] == false
-        console.log(task['done'])
-    }).length
-    const percentage = tasks_arr.length > 0 ? Math.floor(completedTasks / tasks_arr.length) : 0
-    console.log(percentage)
+    // tasks_arr.forEach(task => console.log(typeof(task.done)))
+    console.log(tasks_arr)
+    const completedTasks = tasks_arr.filter(task => {console.log(task.done); return task.done }).length
+    const percentage = tasks_arr.length > 0 ? Math.floor(completedTasks / tasks_arr.length*100) : 0
+    // console.log(percentage)
     const taskBarElem = document.createElement('td');
+    taskBarElem.classList.add('credit_progress')
     taskBarElem.innerHTML += `<div class="progress" role="progressbar" aria-label="Example with label"  aria-valuemin="0" aria-valuemax="100">\
-        <div class="progress-bar" style="width: ${percentage > 0.05 ? percentage : 5}%">${percentage}%</div>\
+        <div class="progress-bar" style="width: ${percentage > 5 ? percentage : 5}%">${percentage}%</div>\
     </div>`
     return taskBarElem;
 }
@@ -98,4 +101,44 @@ const initManagementButtons = (record,id) => {
                         </td>`
 }
 
-export {proceedSubjectCreditRecords, proceedSubjectManagementRecords}
+const refreshSubjectsStored = (studentId = 1) => {
+    const req = new XMLHttpRequest
+    req.open('GET',`http://localhost:8080/api/v1/students/${studentId}`,false)
+    req.setRequestHeader('Content-Type','application/json')
+    req.send(JSON.stringify({}))
+  
+    sessionStorage.setItem('Subjects',JSON.stringify(JSON.parse(req.responseText)['actualSemester']['subjects']))
+  
+    var subjectsNewData = JSON.parse(req.responseText).actualSemester.subjects
+  
+    const subjectRecords = document.querySelectorAll('#subject_credit_list tr.actual_record')
+  
+    subjectRecords.forEach(record => {
+      const progressBarWraper = record.querySelector('.credit_progress')
+      const newSubjectObj = subjectsNewData.find(subject => subject.id == +record.id)
+      progressBarWraper.remove()
+      record.insertBefore(createTaskProgressBar(newSubjectObj.tasks), record.childNodes[2])
+    })
+  }
+
+const sendTaskUpdateRequest = (taskStatus, taskInput) => {
+    const req = new XMLHttpRequest
+  
+    if (taskStatus) {
+      console.log('done request sent')
+      req.open('PUT',`http://localhost:8080/api/v1/tasks/done/${taskInput.id}`,false)
+    } else {
+      console.log('undone request sent')
+      req.open('PUT',`http://localhost:8080/api/v1/tasks/undone/${taskInput.id}`,false)
+    }
+    req.setRequestHeader('Content-Type','application/json')
+    req.send(JSON.stringify({}))
+  
+    if (req.status != 200)  {
+        setTimeout(function() { alert("Coś poszło nie tak..."); }, 10);
+    }
+  }
+  
+// const getSubjectTaksks
+
+export {proceedSubjectCreditRecords, proceedSubjectManagementRecords, refreshSubjectsStored, sendTaskUpdateRequest}

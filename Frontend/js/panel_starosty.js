@@ -1,16 +1,12 @@
 import { addAlert } from "./alerts.js";
-import {proceedSubjectManagementRecords,proceedSubjectCreditRecords} from "./subject_management.js";
+import {proceedSubjectManagementRecords,proceedSubjectCreditRecords, refreshSubjectsStored, sendTaskUpdateRequest} from "./subject_management.js";
 
 document.addEventListener('DOMContentLoaded', () => {
-
-    const authResponse = JSON.parse(sessionStorage.getItem('AuthResponse'));
-    const subjectList = authResponse['user']['actualSemester']['subjects'];
+    const subjectList = JSON.parse(sessionStorage.getItem('Subjects'));
 
     proceedSubjectCreditRecords(subjectList)
     proceedSubjectManagementRecords(subjectList)
 
-    console.log(subjectList);
-    
     subjectManagementLogic();
     subjectCreditLogic();
 })
@@ -55,35 +51,41 @@ const subjectCreditLogic = () => {
   const creditButtons = document.querySelectorAll('[dropdown-button]')
   creditButtons.forEach(button => button.addEventListener('click',e => {
     const taskInputs = e.target.parentNode.parentNode.parentNode.querySelectorAll('.form-check input')
-    
-    taskInputs.forEach(taskInput => {
-      // if (taskInput.checked) {
-        
-      // } else {
-      //   console.log('unchecked')
-      // }
-      sendTaskUpdateRequest(taskInput)
+
+    let subjectRecord = e.target.parentNode;
+    while (subjectRecord.nodeName != 'TR') 
+      subjectRecord = subjectRecord.parentNode;
+
+    const subjectId = subjectRecord.id;
+    console.log(subjectId)
+    const tasksToUpdate = getTasksBySubjectId(subjectId)
+
+    tasksToUpdate.forEach(task => {
+      taskInputs.forEach(taskInput => {
+        if (taskInput.parentNode.querySelector('label').innerText.trim() == task.name)
+          sendTaskUpdateRequest(taskInput.checked,task)
+      })
     })
+
+    refreshSubjectsStored(JSON.parse(sessionStorage.getItem('AuthResponse'))['user']['id'])
   }))
 }
 
-
-const sendTaskUpdateRequest = (taskInput) => {
+const getTasksBySubjectId = (subjectId) => {
   const req = new XMLHttpRequest
-
-  if (taskInput.checked) {
-    req.open('PUT',`http://localhost:8080/api/v1/tasks/undone/${taskInput.id}`,false)
-  } else {
-    req.open('PUT',`http://localhost:8080/api/v1/tasks/done/${taskInput.id}`,false)
-  }
+  req.open('GET',`http://localhost:8080/api/v1/tasks/${subjectId}`,false)
   req.setRequestHeader('Content-Type','application/json')
   req.send(JSON.stringify({}))
-  console.log(req)
 
-  if (req.status != 200)  {
+  if (req.status == 200) {
+    console.log(JSON.parse(req.responseText))
+    return JSON.parse(req.responseText)
+  } else {
       setTimeout(function() { alert("Coś poszło nie tak..."); }, 10);
   }
 }
+
+
 
 
 const ticketManagementLogic = () => {

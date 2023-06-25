@@ -45,7 +45,7 @@ public class DataInitializerV2 implements CommandLineRunner
         {
             logger.info("EXECUTING : DataInitializerV2");
 
-            FileInputStream fis = new FileInputStream("Backend\\todoapp\\init_data.xlsx");
+            FileInputStream fis = new FileInputStream("E:\\STUDIA\\io\\projekt\\IO--To-do-list\\Backend\\todoapp\\init_data.xlsx");
             XSSFWorkbook workbook = new XSSFWorkbook(fis);
 
             ArrayList<Task> tasks = new ArrayList<>(); // done

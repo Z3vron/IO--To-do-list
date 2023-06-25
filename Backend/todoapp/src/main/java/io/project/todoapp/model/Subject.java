@@ -21,7 +21,6 @@ public class Subject {
     private Long id;
     private String name;
     private Integer ectsPoints;
-    private boolean active;
 
     @OneToMany(cascade = CascadeType.ALL)
     @Transient

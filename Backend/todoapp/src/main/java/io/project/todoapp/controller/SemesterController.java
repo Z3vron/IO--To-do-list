@@ -18,6 +18,7 @@ public class SemesterController {
 
     private final SemesterService semesterService;
 
+    @CrossOrigin(origins = "*")
     @GetMapping("/api/v1/init/semesters")
     public List<Semester> getAllSemesters() {
         return semesterService.getAllSemesters();

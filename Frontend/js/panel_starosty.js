@@ -1,16 +1,12 @@
 import { addAlert } from "./alerts.js";
-import {proceedSubjectManagementRecords,proceedSubjectCreditRecords} from "./subject_management.js";
+import {proceedSubjectManagementRecords,proceedSubjectCreditRecords, refreshSubjectsStored, sendTaskUpdateRequest} from "./subject_management.js";
 
 document.addEventListener('DOMContentLoaded', () => {
-
-    // const authResponse = JSON.parse(sessionStorage.getItem('AuthResponse'));
     const subjectList = JSON.parse(sessionStorage.getItem('Subjects'));
 
     proceedSubjectCreditRecords(subjectList)
     proceedSubjectManagementRecords(subjectList)
 
-    console.log(subjectList);
-    
     subjectManagementLogic();
     subjectCreditLogic();
 })
@@ -55,47 +51,41 @@ const subjectCreditLogic = () => {
   const creditButtons = document.querySelectorAll('[dropdown-button]')
   creditButtons.forEach(button => button.addEventListener('click',e => {
     const taskInputs = e.target.parentNode.parentNode.parentNode.querySelectorAll('.form-check input')
-    
-    taskInputs.forEach(taskInput => {
-      sendTaskUpdateRequest(taskInput)
+
+    let subjectRecord = e.target.parentNode;
+    while (subjectRecord.nodeName != 'TR') 
+      subjectRecord = subjectRecord.parentNode;
+
+    const subjectId = subjectRecord.id;
+    console.log(subjectId)
+    const tasksToUpdate = getTasksBySubjectId(subjectId)
+
+    tasksToUpdate.forEach(task => {
+      taskInputs.forEach(taskInput => {
+        if (taskInput.parentNode.querySelector('label').innerText.trim() == task.name)
+          sendTaskUpdateRequest(taskInput.checked,task)
+      })
     })
 
     refreshSubjectsStored(JSON.parse(sessionStorage.getItem('AuthResponse'))['user']['id'])
   }))
 }
 
-
-const sendTaskUpdateRequest = (taskInput) => {
+const getTasksBySubjectId = (subjectId) => {
   const req = new XMLHttpRequest
-
-  if (taskInput.checked) {
-    req.open('PUT',`http://localhost:8080/api/v1/tasks/done/${taskInput.id}`,false)
-  } else {
-    req.open('PUT',`http://localhost:8080/api/v1/tasks/undone/${taskInput.id}`,false)
-  }
+  req.open('GET',`http://localhost:8080/api/v1/tasks/${subjectId}`,false)
   req.setRequestHeader('Content-Type','application/json')
   req.send(JSON.stringify({}))
 
-  if (req.status != 200)  {
+  if (req.status == 200) {
+    console.log(JSON.parse(req.responseText))
+    return JSON.parse(req.responseText)
+  } else {
       setTimeout(function() { alert("Coś poszło nie tak..."); }, 10);
   }
 }
 
 
-const refreshSubjectsStored = (studentId = 1) => {
-  console.log(sessionStorage.getItem('AuthResponse'))
-  const req = new XMLHttpRequest
-  // req.open('GET',`http://localhost:8080/api/v1/students/${studentId}`,false)
-  req.open('GET',`http://localhost:8080/api/v1/tasks/1/1`,false)
-  req.setRequestHeader('Content-Type','application/json')
-  req.send(JSON.stringify({}))
-
-  console.log(JSON.parse(req.responseText))
-  // const semestrData = JSON.parse(req.responseText).find(semestr => semestr['id'] == semestrId)
-  // console.log(semestrData)
-  // sessionStorage.setItem('Subjects',JSON.stringify(semestrData['subjects']))
-  // proceedSubjectCreditRecords(semestrData['subjects'])
-}
 
 
 const ticketManagementLogic = () => {

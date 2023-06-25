@@ -6,6 +6,8 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @AllArgsConstructor
 @Slf4j
@@ -25,14 +27,20 @@ public class TaskController {
     }
 
     @CrossOrigin(origins = "*")
-    @PutMapping("/api/v1/tasks/undone/{taskId}")
+    @PutMapping("/api/v1/tasks/done/{taskId}")
     public void makeTaskDone(@PathVariable("taskId") Long taskId) {
         taskService.makeTaskDone(taskId);
     }
 
     @CrossOrigin(origins = "*")
-    @PutMapping("/api/v1/tasks/done/{taskId}")
+    @PutMapping("/api/v1/tasks/undone/{taskId}")
     public void makeTaskUndone(@PathVariable("taskId") Long taskId) {
         taskService.makeTaskUndone(taskId);
+    }
+
+    @CrossOrigin(origins = "*")
+    @GetMapping("/api/v1/tasks/{subjectId}")
+    public List<Task> getAllTasksForSubject(@PathVariable("subjectId") Long subjectId) {
+        return taskService.getAllTasksForSubject(subjectId);
     }
 }

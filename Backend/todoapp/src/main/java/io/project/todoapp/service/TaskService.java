@@ -8,6 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
@@ -52,6 +53,10 @@ public class TaskService {
 
     public List<Task> findAll() {
         return taskRepository.findAll();
+    }
+
+    public List<Task> getAllTasksForSubject(Long subjectId) {
+        return this.findAll().stream().filter(s -> s.getSubjectId() == subjectId).collect(Collectors.toList());
     }
 
     private Task getTask(Long taskId) {

@@ -6,6 +6,7 @@ import io.project.todoapp.security.user.User;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.PathVariable;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -57,6 +58,12 @@ public class TaskService {
 
     public List<Task> getAllTasksForSubject(Long subjectId) {
         return this.findAll().stream().filter(s -> s.getSubjectId() == subjectId).collect(Collectors.toList());
+    }
+
+    public void removeTaskFromSubject(String taskName, Long subjectId) {
+//        List<Task> tasksToRemove = taskRepository.findAll().stream().filter(task -> task.getName() == taskName && task.getSubjectId() == subjectId).collect(Collectors.toList());
+        List<Task> tasksToRemove = this.getAllTasksForSubject(subjectId).stream().filter(task -> task.getName() == taskName).collect(Collectors.toList());
+        tasksToRemove.forEach(task -> this.removeTask(task.getId()));
     }
 
     private Task getTask(Long taskId) {

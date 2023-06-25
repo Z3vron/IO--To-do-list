@@ -20,7 +20,7 @@ import java.util.stream.Collectors;
 @Slf4j
 public class UserService {
 
-    private static final String NOT_FOUND_USER_EXCEPTION_MESSAGE = "Student with id: %s not founded";
+    private static final String NOT_FOUND_USER_EXCEPTION_MESSAGE = "Student with id: %s not found";
 
     private final UserRepository userRepository;
     private final TaskRepository taskRepository;
@@ -57,6 +57,10 @@ public class UserService {
         if(foundedUser.isPresent() && foundedUser.get().isStudent()) {
             userRepository.delete(foundedUser.get());
         }
+    }
+
+    public List<User> getAllStudentsOnSemester(Integer semester) {
+        return userRepository.findAll().stream().filter(user -> user.getActualSemester().getNumber() == semester).collect(Collectors.toList());
     }
 
     public List<User> findAll() {

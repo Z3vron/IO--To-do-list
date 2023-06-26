@@ -1,17 +1,17 @@
+import {addTaskUpdateListener} from './panel_starosty.js'
 
-const proceedSubjectCreditRecords = (records) => {
+const proceedSubjectCreditRecords = (records,isPresident=false) => {
     const subjectList = document.querySelector('#subject_credit_list tbody')
     subjectList.innerHTML = ''
-    records.forEach( (record,ind) => addSubjectCreditRecord(subjectList,record,ind))
+    records.forEach( (record,ind) => addSubjectCreditRecord(subjectList,record,ind,isPresident))
 }
 
 const proceedSubjectManagementRecords = (records) => {
     const subjectList = document.querySelector('#subject_management_list tbody')
-    // print(records)
     records.forEach( (record,ind) => addSubjectManagementRecord(subjectList,record,ind))
 }
 
-const addSubjectCreditRecord = (parent,subjectData,subject_ind) => {
+const addSubjectCreditRecord = (parent,subjectData,subject_ind,isPresident) => {
     const record = document.createElement('tr');
     record.id = subjectData['id']
     record.className = 'credit_record'
@@ -20,8 +20,11 @@ const addSubjectCreditRecord = (parent,subjectData,subject_ind) => {
     record.innerHTML += `<td class="subject_name">${subjectData['name']}</td>`;
     record.appendChild(createTaskProgressBar(subjectData['tasks']));
     record.appendChild(createSubjectCreditDropdown(subjectData['tasks']));
-    record.appendChild(addNewTaskButton(subjectData));
-    record.appendChild(addRemoveTaskButton(subjectData));
+    if (isPresident) {
+        record.appendChild(addNewTaskButton(subjectData));
+        record.appendChild(addRemoveTaskButton(subjectData));
+    }
+
 
     parent.append(record);
 }
@@ -118,24 +121,31 @@ const initManagementButtons = (record,id) => {
 }
 
 const refreshSubjectsStored = (studentId = 1) => {
-    console.log('refreshing...')
     const req = new XMLHttpRequest
     req.open('GET',`http://localhost:8080/api/v1/students/${studentId}`,false)
     req.setRequestHeader('Content-Type','application/json')
     req.send(JSON.stringify({}))
   
     sessionStorage.setItem('Subjects',JSON.stringify(JSON.parse(req.responseText)['actualSemester']['subjects']))
-    console.log(JSON.parse(req.responseText)['actualSemester']['subjects'])
+    // console.log(JSON.parse(req.responseText)['actualSemester']['subjects'])
   
     var subjectsNewData = JSON.parse(req.responseText).actualSemester.subjects
   
     const subjectRecords = document.querySelectorAll('#subject_credit_list tr.credit_record')
   
     subjectRecords.forEach(record => {
-      const progressBarWraper = record.querySelector('.credit_progress')
-      const newSubjectObj = subjectsNewData.find(subject => subject.id == +record.id)
-      progressBarWraper.remove()
-      record.insertBefore(createTaskProgressBar(newSubjectObj.tasks), record.childNodes[2])
+        const newSubjectObj = subjectsNewData.find(subject => subject.id == +record.id)
+
+        const progressBarWraper = record.querySelector('.credit_progress')
+        const dropDownWrapper = record.querySelector('.etap')
+
+        progressBarWraper.remove()
+        dropDownWrapper.remove()
+
+        record.insertBefore(createSubjectCreditDropdown(newSubjectObj.tasks),record.childNodes[2])
+        record.insertBefore(createTaskProgressBar(newSubjectObj.tasks), record.childNodes[2])
+
+        addTaskUpdateListener(record)
     })
   }
 

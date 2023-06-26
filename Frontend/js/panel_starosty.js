@@ -4,10 +4,7 @@ import {proceedSubjectManagementRecords,proceedSubjectCreditRecords, refreshSubj
 document.addEventListener('DOMContentLoaded', () => {
     const subjectList = JSON.parse(sessionStorage.getItem('Subjects'));
 
-    proceedSubjectCreditRecords(subjectList)
-    proceedSubjectManagementRecords(subjectList)
-
-    subjectManagementLogic();
+    proceedSubjectCreditRecords(subjectList,true)
     subjectCreditLogic();
 })
 
@@ -42,43 +39,47 @@ const subjectManagementLogic = () => {
 
 
 const subjectCreditLogic = () => {
-  const creditButtons = document.querySelectorAll('[dropdown-button]')
+  const creditButtons = [...document.querySelectorAll('[dropdown-button]')]
+  
+
   creditButtons.forEach(button => {
-      
-    let subjectRecord = button.parentNode;
-    while (subjectRecord.nodeName != 'TR') 
-    subjectRecord = subjectRecord.parentNode;
+
+    var subjectRecord = button.closest('tr')
 
     const subjectId = subjectRecord.id;
     const tasksToUpdate = getTasksBySubjectId(subjectId)
     
     addTaskLogic(subjectId);
     removeTaskLogic(subjectId);
-    refreshSubjectsStored(JSON.parse(sessionStorage.getItem('AuthResponse')).user.id)
 
     button.addEventListener('click',e => {
       const taskInputs = e.target.parentNode.parentNode.parentNode.querySelectorAll('.form-check input')
 
-      tasksToUpdate.forEach(task => {
-        taskInputs.forEach(taskInput => {
-          if (taskInput.parentNode.querySelector('label').innerText.trim() == task.name)
-            sendTaskUpdateRequest(taskInput.checked,task)
+      addAlert('warning','Saving changes to database')
+      setTimeout(() => {
+        tasksToUpdate.forEach(task => {
+          taskInputs.forEach(taskInput => {
+            if (taskInput.parentNode.querySelector('label').innerText.trim() == task.name)
+              sendTaskUpdateRequest(taskInput.checked,task)
+          })
         })
+        addAlert('success','Saved successfully')
+        refreshSubjectsStored(JSON.parse(sessionStorage.getItem('AuthResponse'))['user']['id'])
+      }, 50);
+      
       })
-
-      refreshSubjectsStored(JSON.parse(sessionStorage.getItem('AuthResponse'))['user']['id'])
-    })
   }
   )
 
 }
 
 const addTaskLogic = (subjectId) => {
-  const addTaskButtons = document.querySelectorAll('td.add_task_button button')
-  addTaskButtons.forEach(button => button.addEventListener('click', () => {
+  const addTaskButton = document.getElementById(`${subjectId}`).querySelector('td.add_task_button button')
+  addTaskButton.addEventListener('click', () => {
+      console.log(subjectId)
       const president = JSON.parse(sessionStorage.getItem('AuthResponse')).user
       performTaskAdding(subjectId,president)
-  }))
+  })
 }
 
 const removeTaskLogic = (subjectId) => {
@@ -215,7 +216,6 @@ const removeTask = (task_name,subjectId) => {
   req.open('DELETE',`http://localhost:8080/api/v1/tasks/remove/${task_name}/${subjectId}`,false)
   req.setRequestHeader('Content-Type','application/json')
   req.send(JSON.stringify({}))
-
 }
 
 const getTasksBySubjectId = (subjectId) => {
@@ -230,8 +230,6 @@ const getTasksBySubjectId = (subjectId) => {
       setTimeout(function() { alert("Coś poszło nie tak..."); }, 10);
   }
 }
-
-
 
 const ticketManagementLogic = () => {
     const buttons = document.querySelectorAll('.ticket_record button')
@@ -361,3 +359,30 @@ const studentManagementInit = () => {
         element.innerHTML = assignedListHtml
     });
 }
+
+const addTaskUpdateListener = (subjectRecord) => {
+  
+    const subjectId = subjectRecord.id;
+    const tasksToUpdate = getTasksBySubjectId(subjectId)
+    
+    subjectRecord.querySelector('[dropdown-button]').addEventListener('click',e => {
+      const taskInputs = e.target.parentNode.parentNode.parentNode.querySelectorAll('.form-check input')
+
+      addAlert('warning','Saving changes to database')
+      setTimeout(() => {
+        tasksToUpdate.forEach(task => {
+          taskInputs.forEach(taskInput => {
+            if (taskInput.parentNode.querySelector('label').innerText.trim() == task.name)
+              sendTaskUpdateRequest(taskInput.checked,task)
+          })
+        addAlert('success','Saved successfully')
+        })
+  
+        refreshSubjectsStored(JSON.parse(sessionStorage.getItem('AuthResponse'))['user']['id'])
+      }, 50);
+      
+    })
+}
+
+
+export {addTaskUpdateListener}

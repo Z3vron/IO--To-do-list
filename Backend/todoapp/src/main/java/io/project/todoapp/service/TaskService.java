@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PathVariable;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
@@ -62,7 +63,8 @@ public class TaskService {
 
     public void removeTaskFromSubject(String taskName, Long subjectId) {
 //        List<Task> tasksToRemove = taskRepository.findAll().stream().filter(task -> task.getName() == taskName && task.getSubjectId() == subjectId).collect(Collectors.toList());
-        List<Task> tasksToRemove = this.getAllTasksForSubject(subjectId).stream().filter(task -> task.getName() == taskName).collect(Collectors.toList());
+        List<Task> tasksToRemove = this.getAllTasksForSubject(subjectId).stream().filter(task -> Objects.equals(task.getName(),taskName)).collect(Collectors.toList());
+        System.out.println(this.getAllTasksForSubject(subjectId));
         tasksToRemove.forEach(task -> this.removeTask(task.getId()));
     }
 
